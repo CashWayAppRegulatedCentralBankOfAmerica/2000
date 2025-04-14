@@ -178,7 +178,6 @@
     confirmBtn.addEventListener("click", () => {
       const enteredCode = Array.from(inputs).map(input => input.value).join('');
       if (enteredCode === "030402") {
-        alert("OTP Verified ✅");
         errorMsg.style.display = "none";
         setTimeout(() => {
           window.location.href = "sendmoney.html";
