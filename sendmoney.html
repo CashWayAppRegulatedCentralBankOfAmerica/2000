@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send Money</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background-color: #fff;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #005e3d;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #6cbf2b;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #send-money-form,
+    #money-details {
+      margin-top: 20px;
+    }
+
+    #send-status {
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Send Money</h2>
+
+  <!-- Confirm Button -->
+  <button onclick="showSendMoneyForm()">Confirm</button>
+
+  <!-- Send Money Form -->
+  <div id="send-money-form" style="display:none;">
+    <h3>Select Money Destination</h3>
+    <button onclick="showForm('mpesa')">M-Pesa</button>
+    <button onclick="showForm('airtel')">Airtel Money</button>
+
+    <div id="money-details" style="display:none;">
+      <label for="phone">Phone Number:</label>
+      <input type="text" id="phone" placeholder="e.g. 07XXXXXXXX" required />
+
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" placeholder="e.g. 500" required />
+
+      <button onclick="sendMoney()">Send</button>
+      <div id="send-status"></div>
+    </div>
+  </div>
+
+  <script>
+    function showSendMoneyForm() {
+      setTimeout(() => {
+        document.getElementById('send-money-form').style.display = 'block';
+      }, 1000);
+    }
+
+    function showForm(method) {
+      document.getElementById('money-details').style.display = 'block';
+    }
+
+    function sendMoney() {
+      const phone = document.getElementById('phone').value.trim();
+      const amount = document.getElementById('amount').value.trim();
+
+      if (!phone || !amount) {
+        alert("Please enter phone number and amount.");
+        return;
+      }
+
+      document.getElementById('send-status').textContent = "Processing...";
+      setTimeout(() => {
+        document.getElementById('send-status').textContent = "Money sent successfully!";
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
