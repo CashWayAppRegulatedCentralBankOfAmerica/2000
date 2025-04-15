@@ -297,7 +297,7 @@
   </section>
 
   <section class="card transactions">
-    <div class="transaction">
+    <div class="transaction" id="owealth-transaction">
       <div class="icon">%</div>
       <div class="details">
         <p>OWealth Interest</p>
@@ -305,7 +305,7 @@
       </div>
       <span id="owealth-amount" class="amount success">+ USD 162.09</span>
     </div>
-    <div class="transaction">
+    <div class="transaction" id="mtn-transaction">
       <div class="icon">💰</div>
       <div class="details">
         <p>MTN/Airtel PLC Interest</p>
@@ -338,6 +338,27 @@
     <a href="otp.html">💳 Cards</a>
     <a href="otp.html">👤 Me</a>
   </nav>
+
+  <!-- Transfer/Add Funds Modals -->
+  <div id="transferModal" class="modal">
+    <div class="modal-content">
+      <h2>Transfer Funds</h2>
+      <p>Enter amount to transfer:</p>
+      <input type="number" id="transfer-amount" placeholder="Amount in USD" />
+      <button class="close-modal" onclick="closeTransferModal()">Cancel</button>
+      <button class="close-modal" onclick="confirmTransfer()">Confirm Transfer</button>
+    </div>
+  </div>
+
+  <div id="addFundModal" class="modal">
+    <div class="modal-content">
+      <h2>Add Funds</h2>
+      <p>Enter amount to add:</p>
+      <input type="number" id="add-fund-amount" placeholder="Amount in USD" />
+      <button class="close-modal" onclick="closeAddFundModal()">Cancel</button>
+      <button class="close-modal" onclick="confirmAddFund()">Confirm Add Fund</button>
+    </div>
+  </div>
 
   <!-- Help Modal -->
   <div id="helpModal" class="modal">
@@ -383,6 +404,15 @@
         document.getElementById("helpModal").style.display = "flex";
       });
 
+      // Adding Transfer and Add Fund modals on investment click
+      document.getElementById("owealth-transaction").addEventListener("click", () => {
+        openTransferModal("owealth");
+      });
+
+      document.getElementById("mtn-transaction").addEventListener("click", () => {
+        openTransferModal("mtn");
+      });
+
       // Start the live clock
       setInterval(updateLiveTime, 1000); // Update every second
     });
@@ -411,6 +441,35 @@
 
       document.getElementById("owealth-amount").textContent = `+ USD ${owealthAmount.toFixed(2)}`;
       document.getElementById("mtn-amount").textContent = `+ USD ${mtnAmount.toFixed(2)}`;
+    }
+
+    // Modal functions
+    function openTransferModal(investmentType) {
+      document.getElementById("transferModal").style.display = "flex";
+    }
+
+    function closeTransferModal() {
+      document.getElementById("transferModal").style.display = "none";
+    }
+
+    function confirmTransfer() {
+      const amount = document.getElementById("transfer-amount").value;
+      alert(`Transfer of USD ${amount} confirmed`);
+      closeTransferModal();
+    }
+
+    function openAddFundModal() {
+      document.getElementById("addFundModal").style.display = "flex";
+    }
+
+    function closeAddFundModal() {
+      document.getElementById("addFundModal").style.display = "none";
+    }
+
+    function confirmAddFund() {
+      const amount = document.getElementById("add-fund-amount").value;
+      alert(`Add Funds of USD ${amount} confirmed`);
+      closeAddFundModal();
     }
 
     function closeHelpModal() {
