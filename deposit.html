@@ -67,6 +67,56 @@
     button:hover {
       background-color: #007e45;
     }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .modal button {
+      width: 100%;
+      background-color: #00a859;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #007e45;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -75,11 +125,19 @@
     <form id="depositForm">
       <label for="amount">Enter Amount (KES)</label>
       <input type="number" id="amount" name="amount" placeholder="e.g. 5000" required min="1"/>
-
       <p class="info">Deposit will automatically be deducted from your primary number *******103</p>
-
       <button type="submit">Submit Deposit</button>
     </form>
+  </div>
+
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h3>Enter your 4-digit PIN</h3>
+      <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="4" />
+      <button id="pinSubmit">Submit PIN</button>
+      <p id="errorMessage" class="error"></p>
+    </div>
   </div>
 
   <script>
@@ -88,12 +146,21 @@
       localStorage.setItem('pinAttempts', 0);
     }
 
+    // Show PIN Modal
+    function showPinModal() {
+      document.getElementById('pinModal').style.display = 'flex';
+    }
+
+    // Hide PIN Modal
+    function hidePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+    }
+
     document.getElementById('depositForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
       // Check if attempts limit has been reached
       let attempts = parseInt(localStorage.getItem('pinAttempts'));
-
       if (attempts >= 3) {
         alert("You have exceeded the maximum PIN attempts. Please try again later.");
         return; // Prevent form submission
@@ -102,37 +169,44 @@
       const amount = parseFloat(document.getElementById('amount').value);
 
       if (!isNaN(amount) && amount > 0) {
-        const pin = prompt("Enter your 4-digit PIN to confirm deposit:");
+        showPinModal();
+        
+        // Handle PIN submission
+        document.getElementById('pinSubmit').onclick = function () {
+          const pin = document.getElementById('pinInput').value;
+          
+          if (pin === "1962") {
+            // Retrieve current balance or default to 0
+            let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
 
-        if (pin === "1962") {
-          // Retrieve current balance or default to 0
-          let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+            // Add deposit amount
+            let newBalance = currentBalance + amount;
 
-          // Add deposit amount
-          let newBalance = currentBalance + amount;
+            // Store new balance
+            localStorage.setItem('balance', newBalance.toFixed(2));
+            localStorage.setItem('depositAmount', amount.toFixed(2));
 
-          // Store new balance
-          localStorage.setItem('balance', newBalance.toFixed(2));
-          localStorage.setItem('depositAmount', amount.toFixed(2));
+            // Reset attempts counter after successful deposit
+            localStorage.setItem('pinAttempts', 0);
 
-          // Reset attempts counter after successful deposit
-          localStorage.setItem('pinAttempts', 0);
-
-          // Redirect to success page
-          setTimeout(() => {
-            window.location.href = 'depositsuccessful.html';
-          }, 1000);
-        } else {
-          // Increment the failed attempts counter
-          attempts++;
-          localStorage.setItem('pinAttempts', attempts);
-
-          if (attempts >= 3) {
-            alert("You have exceeded the maximum PIN attempts. Please try again later.");
+            // Hide PIN modal and proceed to success page
+            hidePinModal();
+            setTimeout(() => {
+              window.location.href = 'depositsuccessful.html';
+            }, 1000);
           } else {
-            alert("Incorrect PIN. You have " + (3 - attempts) + " attempts left.");
+            // Increment failed attempts counter
+            let attempts = parseInt(localStorage.getItem('pinAttempts')) + 1;
+            localStorage.setItem('pinAttempts', attempts);
+
+            if (attempts >= 3) {
+              alert("You have exceeded the maximum PIN attempts. Please try again later.");
+              hidePinModal(); // Close modal after lockout
+            } else {
+              document.getElementById('errorMessage').textContent = "Incorrect PIN. You have " + (3 - attempts) + " attempts left.";
+            }
           }
-        }
+        };
       }
     });
   </script>
