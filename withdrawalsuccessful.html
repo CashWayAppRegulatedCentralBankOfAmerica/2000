@@ -3,22 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Dashboard</title>
+  <title>Withdrawal Successful</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0fdf4;
+      background-color: #f6fff8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 2rem;
     }
 
-    .dashboard {
-      max-width: 600px;
-      margin: auto;
+    .success-container {
       background-color: white;
-      border-radius: 16px;
       padding: 2rem;
+      border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
     }
 
     h2 {
@@ -26,53 +30,32 @@
       margin-bottom: 1rem;
     }
 
-    .balance {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 2rem;
-    }
-
-    .history-title {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: #444;
-    }
-
-    .history {
-      max-height: 300px;
-      overflow-y: auto;
-      border-top: 1px solid #ccc;
-      padding-top: 1rem;
-    }
-
-    .transaction {
-      border-bottom: 1px solid #eee;
-      padding: 0.75rem 0;
-    }
-
-    .transaction:last-child {
-      border-bottom: none;
+    .info {
+      margin: 10px 0;
+      font-size: 1rem;
+      color: #333;
     }
 
     .transaction-id {
       font-weight: bold;
       color: #007e45;
+      margin-top: 1rem;
     }
 
-    .actions {
+    .btn-group {
       margin-top: 2rem;
       display: flex;
-      gap: 1rem;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
     .btn {
-      flex: 1;
-      padding: 12px;
-      font-size: 1rem;
       background-color: #00a859;
       color: white;
+      padding: 12px;
       border: none;
       border-radius: 8px;
+      font-size: 1rem;
       cursor: pointer;
     }
 
@@ -82,50 +65,37 @@
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <h2>Welcome Back!</h2>
-    <p class="balance">Current Balance: KES <span id="balanceDisplay">0.00</span></p>
-
-    <div>
-      <p class="history-title">Withdrawal History</p>
-      <div class="history" id="historyList">
-        <!-- Transactions will be injected here -->
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn" onclick="window.location.href='withdraw.html'">Withdraw</button>
-      <button class="btn" onclick="logout()">Logout</button>
+  <div class="success-container">
+    <h2>Withdrawal Successful</h2>
+    <p class="info" id="amountDisplay"></p>
+    <p class="info" id="phoneDisplay"></p>
+    <p class="transaction-id" id="transactionIdDisplay"></p>
+    
+    <div class="btn-group">
+      <button class="btn" onclick="window.location.href='withdraw.html'">Make Another Withdrawal</button>
+      <button class="btn" onclick="window.location.href='dashboard.html'">Go Back to Dashboard</button>
     </div>
   </div>
 
   <script>
-    const balance = parseFloat(localStorage.getItem('balance')) || 0;
-    document.getElementById('balanceDisplay').textContent = balance.toFixed(2);
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount');
+    const phone = localStorage.getItem('phoneNumber') || "Unknown";
 
-    const history = JSON.parse(localStorage.getItem('withdrawHistory')) || [];
-    const historyContainer = document.getElementById('historyList');
-
-    if (history.length === 0) {
-      historyContainer.innerHTML = "<p>No withdrawals yet.</p>";
-    } else {
-      history.forEach(tx => {
-        const div = document.createElement('div');
-        div.className = 'transaction';
-        div.innerHTML = `
-          <div>Amount: KES ${tx.amount.toFixed(2)}</div>
-          <div>Phone: ${tx.phone}</div>
-          <div class="transaction-id">ID: ${tx.transactionId}</div>
-          <div style="font-size: 0.9rem; color: #666;">Date: ${tx.date}</div>
-        `;
-        historyContainer.appendChild(div);
-      });
+    function generateTransactionId() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = 'CX';
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
     }
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'index.html'; // or login page
-    }
+    const transactionId = generateTransactionId();
+
+    document.getElementById('amountDisplay').textContent = `Amount: KES ${parseFloat(amount).toFixed(2)}`;
+    document.getElementById('phoneDisplay').textContent = `Phone Number: ${phone}`;
+    document.getElementById('transactionIdDisplay').textContent = `Transaction ID: ${transactionId}`;
   </script>
 </body>
 </html>
