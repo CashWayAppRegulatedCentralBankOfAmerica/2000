@@ -4,22 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GoBank Register</title>
-  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
+      background-color: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
       margin: 0;
-      padding: 0;
     }
 
     .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      padding: 25px;
       background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
@@ -30,7 +32,7 @@
     label {
       display: block;
       margin-top: 15px;
-      font-weight: bold;
+      font-weight: 500;
     }
 
     input[type="text"],
@@ -69,37 +71,77 @@
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #005c3c;
     }
 
     .message {
       margin-top: 20px;
       font-size: 16px;
       font-weight: bold;
-      color: red;
+      color: green;
       text-align: center;
     }
 
-    .success {
-      color: green;
-    }
-
-    .login-redirect {
-      display: flex;
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
       justify-content: center;
-      margin-top: 20px;
+      align-items: center;
+      z-index: 1000;
     }
 
-    .login-redirect button {
+    .modal-content {
+      background-color: #fff;
+      padding: 30px 25px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+      color: #c0392b;
+      font-size: 20px;
+    }
+
+    .modal-content p {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .modal-content button {
       background-color: #444;
-      color: white;
-      padding: 10px 20px;
+      color: #fff;
       border: none;
+      padding: 10px 20px;
       border-radius: 6px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .modal-content button:hover {
+      background-color: #222;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h2>Register at GoBank</h2>
     <form onsubmit="handleRegister(event)">
@@ -137,10 +179,18 @@
       </div>
 
       <button type="submit" class="btn">Submit</button>
+      <div id="successMsg" class="message"></div>
+      <div class="login-redirect" style="text-align:center; margin-top:20px; display:none;">
+        <button class="btn" onclick="goBack()">Go Back to Login</button>
+      </div>
     </form>
+  </div>
 
-    <div id="message" class="message"></div>
-    <div class="login-redirect" style="display: none;">
+  <!-- Modal -->
+  <div id="nonUsaModal" class="modal">
+    <div class="modal-content">
+      <h3>❌ Registration Error</h3>
+      <p>Unfortunately, based on the information provided, we are only accepting registrations from U.S. citizens at this time.</p>
       <button onclick="goBack()">Go Back to Login</button>
     </div>
   </div>
@@ -165,34 +215,38 @@
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
-      const messageDiv = document.getElementById("message");
+      const successMsg = document.getElementById("successMsg");
       const loginRedirect = document.querySelector(".login-redirect");
 
-      if (!govId.startsWith("US100") || !govId.endsWith("A") ||
-          !phone.startsWith("+1") ||
-          !itin.startsWith("US01") || !itin.endsWith("A")) {
-        messageDiv.textContent = "Registration failed. Non-USA citizens are not accepted.";
-        messageDiv.classList.remove("success");
-        loginRedirect.style.display = "flex";
+      // Validation
+      const validGov = govId.startsWith("US100") && govId.endsWith("A");
+      const validPhone = phone.startsWith("+1");
+      const validItin = itin.startsWith("US01") && itin.endsWith("A");
+
+      if (!validGov || !validPhone || !validItin) {
+        showModal();
         return;
       }
 
       if (password !== confirmPassword) {
-        messageDiv.textContent = "Passwords do not match.";
-        loginRedirect.style.display = "none";
+        successMsg.style.color = "red";
+        successMsg.textContent = "Passwords do not match.";
         return;
       }
 
-      // Passed all validations
-      messageDiv.textContent = "You have successfully registered. Welcome to Opay!";
-      messageDiv.classList.add("success");
-      loginRedirect.style.display = "flex";
+      successMsg.style.color = "green";
+      successMsg.textContent = "You have successfully registered. Welcome to Opay!";
+      loginRedirect.style.display = "block";
+    }
+
+    function showModal() {
+      document.getElementById("nonUsaModal").style.display = "flex";
     }
 
     function goBack() {
       setTimeout(() => {
         window.location.href = "index.html";
-      }, 1000); // 1-second delay
+      }, 1000);
     }
   </script>
 </body>
