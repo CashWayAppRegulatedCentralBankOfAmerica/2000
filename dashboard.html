@@ -177,15 +177,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Set balance if not already stored
             if (!localStorage.getItem("balance")) {
                 localStorage.setItem("balance", "4014.32");
             }
 
-            // Update balance on page load
             updateBalanceDisplay();
 
-            // Apply deposit or withdraw if present
             const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
             const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
 
@@ -225,6 +222,29 @@
                 btn.addEventListener("click", () => {
                     delayNavigation("otp.html");
                 });
+            });
+
+            document.getElementById("withdraw-own").addEventListener("click", () => {
+                const pin = prompt("Enter your PIN");
+                if (pin === "1962") {
+                    const amount = prompt("Enter amount to withdraw");
+                    const amountFloat = parseFloat(amount);
+                    if (!isNaN(amountFloat) && amountFloat > 0) {
+                        let balance = parseFloat(localStorage.getItem("balance") || "0");
+                        if (balance >= amountFloat) {
+                            balance -= amountFloat;
+                            localStorage.setItem("balance", balance.toFixed(2));
+                            localStorage.setItem("lastWithdrawn", amountFloat.toFixed(2));
+                            window.location.href = "withdrawsuccess.html";
+                        } else {
+                            alert("Insufficient balance.");
+                        }
+                    } else {
+                        alert("Invalid amount.");
+                    }
+                } else {
+                    alert("Incorrect PIN.");
+                }
             });
         });
 
@@ -277,7 +297,7 @@
     <section class="quick-actions">
         <button class="sendmoney">To Bank</button>
         <button class="sendmoney">To Other Number</button>
-        <button class="sendmoney">To Own Number</button>
+        <button id="withdraw-own">To Own Number</button>
     </section>
 
     <section class="services">
