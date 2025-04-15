@@ -5,388 +5,204 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
     body {
-      background: #f6f6f6;
-      padding-bottom: 60px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f6fff8;
+      margin: 0;
+      padding: 2rem;
     }
 
-    .top-bar {
+    h1 {
+      text-align: center;
+      color: #00a859;
+    }
+
+    .balance {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      color: #333;
+    }
+
+    .buttons {
       display: flex;
-      justify-content: space-between;
-      padding: 10px 15px;
-      background: white;
-      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
     }
 
-    .profile {
-      display: flex;
-      align-items: center;
-    }
-
-    .profile img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    .icons {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .balance-card {
-      background: green;
+    .buttons button {
+      background-color: #00a859;
       color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .balance-card .add-money {
-      background: white;
-      color: green;
-      padding: 10px 15px;
-      border-radius: 20px;
       border: none;
-    }
-
-    .transactions {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-
-    .transaction {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-    }
-
-    .transaction .icon {
-      width: 30px;
-      height: 30px;
-      background: lightgray;
-      text-align: center;
-      line-height: 30px;
-      border-radius: 50%;
-    }
-
-    .transaction .details {
-      flex-grow: 1;
-      margin-left: 10px;
-    }
-
-    .amount.success {
-      color: green;
-      font-weight: bold;
-    }
-
-    .quick-actions {
-      display: flex;
-      justify-content: space-around;
-      background: white;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-
-    .quick-actions button {
-      background: lightgreen;
-      border: none;
-      padding: 10px;
-      border-radius: 10px;
-      flex: 1;
-      margin: 0 5px;
-    }
-
-    .services {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-
-    .service {
-      background: #ebf8f2;
-      text-align: center;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .promo {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
+    .buttons button:hover {
+      background-color: #007e45;
     }
 
-    .security {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-
-    .options {
-      background: #ebf8f2;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 10px;
-    }
-
-    .bottom-nav {
+    /* Withdrawal Modal */
+    .modal {
+      display: none;
       position: fixed;
-      bottom: 0;
-      width: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
       background: white;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 1px solid #ddd;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 90%;
     }
 
-    .bottom-nav a {
-      text-decoration: none;
-      color: gray;
-      font-size: 14px;
+    .modal-content h2 {
+      color: #00a859;
+      text-align: center;
     }
 
-    .bottom-nav .active {
+    .modal-content input {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .modal-content button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 12px;
+      background-color: #00a859;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #007e45;
+    }
+
+    .success-message {
+      text-align: center;
+      margin-top: 1rem;
       color: green;
       font-weight: bold;
     }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
   </style>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!localStorage.getItem("balance")) {
-        localStorage.setItem("balance", "4014.32");
-      }
-
-      updateBalanceDisplay();
-
-      const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
-      const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
-
-      if (deposit > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance += deposit;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("depositAmount");
-      }
-
-      if (withdraw > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance -= withdraw;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("withdrawAmount");
-      }
-
-      updateBalanceDisplay();
-
-      const delayNavigation = (url) => {
-        setTimeout(() => {
-          window.location.href = url;
-        }, 1000);
-      };
-
-      document.getElementById("add-money").addEventListener("click", () => {
-        delayNavigation("deposit.html");
-      });
-
-      document.querySelectorAll(".sendmoney").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          delayNavigation("otp.html");
-        });
-      });
-
-      document.querySelectorAll(".service").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          delayNavigation("otp.html");
-        });
-      });
-
-      document.getElementById("withdraw-own").addEventListener("click", () => {
-        document.getElementById("withdraw-modal").style.display = "flex";
-      });
-
-      document.getElementById("cancel-withdraw").addEventListener("click", () => {
-        closeWithdrawModal();
-      });
-
-      document.getElementById("confirm-withdraw").addEventListener("click", () => {
-        const pin = document.getElementById("withdraw-pin").value;
-        const amount = parseFloat(document.getElementById("withdraw-amount").value);
-
-        if (pin !== "1962") {
-          alert("Incorrect PIN.");
-          return;
-        }
-
-        if (isNaN(amount) || amount <= 0) {
-          alert("Please enter a valid amount.");
-          return;
-        }
-
-        let balance = parseFloat(localStorage.getItem("balance") || "0");
-        if (balance < amount) {
-          alert("Insufficient balance.");
-          return;
-        }
-
-        balance -= amount;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.setItem("lastWithdrawn", amount.toFixed(2));
-        updateBalanceDisplay();
-        appendWithdrawalTransaction(amount);
-        closeWithdrawModal();
-
-        setTimeout(() => {
-          window.location.href = "withdrawsuccess.html";
-        }, 1000);
-      });
-    });
-
-    function updateBalanceDisplay() {
-      const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-    }
-
-    function closeWithdrawModal() {
-      document.getElementById("withdraw-modal").style.display = "none";
-      document.getElementById("withdraw-pin").value = "";
-      document.getElementById("withdraw-amount").value = "";
-    }
-
-    function appendWithdrawalTransaction(amount) {
-      const container = document.querySelector(".transactions");
-      const div = document.createElement("div");
-      div.className = "transaction";
-      div.innerHTML = `
-        <div class="icon">⬇️</div>
-        <div class="details">
-            <p>Withdraw to Own Number</p>
-            <small>${new Date().toLocaleString()}</small>
-        </div>
-        <span class="amount" style="color:red; font-weight:bold;">- USD ${amount.toFixed(2)}</span>
-      `;
-      container.appendChild(div);
-    }
-  </script>
 </head>
 <body>
-  <header class="top-bar">
-    <div class="profile">
-      <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile"/>
-      <span>Hi, Jacob</span>
-    </div>
-    <div class="icons">
-      <span class="help">HELP</span>
-      <span class="bell">🔔</span>
-    </div>
-  </header>
 
-  <section class="balance-card">
-    <div class="balance-info">
-      <span class="label">Available Balance </span>
-      <h1 id="balance-amount">USD 0.00</h1>
-    </div>
-    <button id="add-money" class="add-money">+ Add Money</button>
-  </section>
+  <h1>Welcome to GoBank</h1>
+  <div class="balance">Balance: KES <span id="balance">0</span></div>
 
-  <section class="transactions">
-    <div class="transaction">
-      <div class="icon">%</div>
-      <div class="details">
-        <p>OWealth Interest</p>
-        <small>April 1st, 02:47:46</small>
-      </div>
-      <span class="amount success">+ USD 162.09</span>
-    </div>
-    <div class="transaction">
-      <div class="icon">💰</div>
-      <div class="details">
-        <p>MTN/Airtel PLC Interest</p>
-        <small>April 1st, 15:24:16</small>
-      </div>
-      <span class="amount success">+ USD 188.40</span>
-    </div>
-  </section>
+  <div class="buttons">
+    <button onclick="location.href='sendmoney.html'">To Bank</button>
+    <button onclick="location.href='deposit.html'">Add Money</button>
+    <button onclick="openWithdraw()">To Own Number</button>
+  </div>
 
-  <section class="quick-actions">
-    <button class="sendmoney">To Bank</button>
-    <button class="sendmoney">To Other Number</button>
-    <button id="withdraw-own">To Own Number</button>
-  </section>
-
-  <section class="services">
-    <div class="service">Airtime & Data</div>
-    <div class="service">Flight</div>
-    <div class="service">School Fee</div>
-    <div class="service">TV Subscription</div>
-    <div class="service">Medication</div>
-    <div class="service">Loan</div>
-    <div class="service">E-statements</div>
-    <div class="service">More</div>
-  </section>
-
-  <section class="promo">
-    <h3>Cash up for grabs!</h3>
-    <p>Invite friends and earn up to USD 200 Cash</p>
-  </section>
-
-  <section class="security">
-    <h3>Security Center</h3>
-    <p>How many offices are stated in the OPay app?</p>
-    <div class="options">
-      <span>A. 17</span><br/>
-      <span>B. 10</span>
-    </div>
-  </section>
-
-  <nav class="bottom-nav">
-    <a href="#" class="active">🏠 Home</a>
-    <a href="#">🎁 Rewards</a>
-    <a href="#">💰 Finance</a>
-    <a href="#">💳 Cards</a>
-    <a href="#">👤 Me</a>
-  </nav>
-
-  <!-- Withdraw Modal -->
-  <div id="withdraw-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000000aa; align-items:center; justify-content:center;">
-    <div style="background:white; padding:20px; border-radius:10px; width:300px;">
-      <h3>Withdraw to Own Number</h3>
-      <div>
-        <label for="pin">Enter PIN:</label>
-        <input type="password" id="withdraw-pin" style="width:100%; padding:5px; margin-top:5px;" />
-      </div>
-      <div style="margin-top:10px;">
-        <label for="amount">Amount:</label>
-        <input type="number" id="withdraw-amount" style="width:100%; padding:5px; margin-top:5px;" />
-      </div>
-      <div style="margin-top:15px; display:flex; justify-content:space-between;">
-        <button id="cancel-withdraw" style="background:gray; color:white; padding:8px 12px; border:none; border-radius:5px;">Cancel</button>
-        <button id="confirm-withdraw" style="background:green; color:white; padding:8px 12px; border:none; border-radius:5px;">Withdraw</button>
-      </div>
+  <!-- Withdrawal Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeWithdraw()">&times;</span>
+      <h2>Withdraw Funds</h2>
+      <input type="number" id="withdrawAmount" placeholder="Enter Amount" min="1" required />
+      <input type="password" id="withdrawPin" placeholder="Enter PIN" maxlength="4" required />
+      <button onclick="submitWithdrawal()">Submit Withdrawal</button>
+      <div class="success-message" id="withdrawSuccess"></div>
     </div>
   </div>
+
+  <script>
+    const balanceElement = document.getElementById('balance');
+
+    function getBalance() {
+      return parseFloat(localStorage.getItem('balance')) || 0;
+    }
+
+    function setBalance(amount) {
+      localStorage.setItem('balance', amount.toFixed(2));
+      balanceElement.textContent = amount.toFixed(2);
+    }
+
+    function updateBalanceView() {
+      balanceElement.textContent = getBalance().toFixed(2);
+    }
+
+    function openWithdraw() {
+      document.getElementById('withdrawModal').style.display = 'flex';
+    }
+
+    function closeWithdraw() {
+      document.getElementById('withdrawModal').style.display = 'none';
+      document.getElementById('withdrawAmount').value = '';
+      document.getElementById('withdrawPin').value = '';
+      document.getElementById('withdrawSuccess').textContent = '';
+    }
+
+    function submitWithdrawal() {
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const pin = document.getElementById('withdrawPin').value;
+      const currentBalance = getBalance();
+
+      if (pin !== "1962") {
+        alert("Incorrect PIN");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      if (amount > currentBalance) {
+        alert("Insufficient balance.");
+        return;
+      }
+
+      const newBalance = currentBalance - amount;
+      setBalance(newBalance);
+
+      document.getElementById('withdrawSuccess').textContent =
+        `KES ${amount.toFixed(2)} withdrawn successfully.`;
+
+      // Optionally, auto-close after 2 seconds
+      setTimeout(() => {
+        closeWithdraw();
+      }, 2000);
+    }
+
+    // On page load, set balance
+    window.onload = function () {
+      // If a deposit was made earlier
+      const deposit = parseFloat(localStorage.getItem('depositAmount'));
+      if (!isNaN(deposit) && deposit > 0) {
+        const newBal = getBalance() + deposit;
+        setBalance(newBal);
+        localStorage.removeItem('depositAmount');
+      } else {
+        updateBalanceView();
+      }
+    };
+  </script>
 </body>
 </html>
