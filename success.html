@@ -66,21 +66,18 @@
 </head>
 <body>
   <div class="success-container">
-    <h2>✅ Transaction Successful</h2>
-    <p id="message"></p>
+    <h2>Transaction Successful</h2>
+    <p id="message">Transaction of KES 160,000.00 was successful. Beneficiary will receive funds within 30 minutes.</p>
 
     <div class="details">
       <p><span>Transaction ID:</span> <span id="transaction-id"></span></p>
-      <p><span>Phone Number:</span> <span id="phone"></span></p>
       <p><span>Operator:</span> <span id="operator"></span></p>
-      <p><span>Transaction Fee:</span> KES <span id="fee"></span></p>
     </div>
 
     <button class="back-btn" onclick="redirectToDashboard()">Go to Dashboard</button>
   </div>
 
   <script>
-    // Generate random 8-character transaction ID
     function generateTransactionID() {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let result = '';
@@ -90,30 +87,12 @@
       return result;
     }
 
-    // Calculate transaction fee based on amount
-    function getTransactionFee(amount) {
-      if (amount < 100) return 0;
-      if (amount < 1000) return 10;
-      if (amount < 10000) return 100;
-      return 200;
-    }
-
-    // Get values from localStorage
-    const phone = localStorage.getItem('phone') || 'Unknown';
-    const amount = parseFloat(localStorage.getItem('amount')) || 0;
+    const transactionId = generateTransactionID();
     const operator = localStorage.getItem('operator') || 'Safaricom';
 
-    const fee = getTransactionFee(amount);
-    const transactionId = generateTransactionID();
-
-    // Display dynamic content
     document.getElementById('transaction-id').textContent = transactionId;
-    document.getElementById('phone').textContent = phone;
     document.getElementById('operator').textContent = operator;
-    document.getElementById('fee').textContent = fee;
-    document.getElementById('message').textContent = `Transaction of KES ${amount.toFixed(2)} was successful. Beneficiary will receive funds within 30 minutes.`;
 
-    // Redirect to dashboard after 1 second
     function redirectToDashboard() {
       setTimeout(() => {
         window.location.href = "dashboard.html";
