@@ -175,6 +175,20 @@
       .services {
         grid-template-columns: repeat(3, 1fr);
       }
+
+      .balance-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .balance-card .add-money {
+        width: 100%;
+      }
+
+      .quick-actions button {
+        flex: 1 0 45%;
+      }
     }
 
     @media (max-width: 480px) {
@@ -182,9 +196,26 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+      .quick-actions {
+        flex-direction: column;
+      }
+
+      .quick-actions button {
+        width: 100%;
+      }
+
       .transaction {
         flex-direction: column;
         align-items: flex-start;
+        gap: 5px;
+      }
+
+      .amount.success {
+        margin-left: 0;
+      }
+
+      .balance-card h1 {
+        font-size: 20px;
       }
     }
 
@@ -212,10 +243,25 @@
 
     .modal-content h2 {
       margin-bottom: 12px;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .modal-content input {
+      margin: 12px 0;
+      padding: 10px;
+      width: 90%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     .modal-btn, .close-modal {
-      margin-top: 20px;
+      margin-top: 12px;
       background-color: #6cbf2b;
       color: white;
       border: none;
@@ -229,108 +275,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
   </style>
-</head>
-<body>
-
-  <header class="top-bar">
-    <div class="profile">
-      <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile" />
-      <span>Hi, Jacob</span>
-    </div>
-    <div class="icons">
-      <span class="help" style="cursor:pointer;">HELP</span>
-      <span class="bell">🔔</span>
-    </div>
-  </header>
-
-  <section class="card balance-card">
-    <div>
-      <span>Available Balance</span>
-      <h1 id="balance-amount">USD 0.00</h1>
-    </div>
-    <button id="add-money" class="add-money">+ Add Money</button>
-  </section>
-
-  <section class="card transactions">
-    <div class="transaction owealth-transaction">
-      <div class="icon">%</div>
-      <div class="details">
-        <p>OWealth Interest</p>
-        <small class="owealth-time">--</small>
-      </div>
-      <span class="amount success owealth-amount">+ USD 0.00</span>
-    </div>
-    <div class="transaction mtn-transaction">
-      <div class="icon">💰</div>
-      <div class="details">
-        <p>MTN/Airtel PLC Interest</p>
-        <small class="mtn-time">--</small>
-      </div>
-      <span class="amount success mtn-amount">+ USD 0.00</span>
-    </div>
-  </section>
-
-  <section class="card quick-actions">
-    <button class="sendmoney">To Bank</button>
-    <button class="sendmoney">To Other Number</button>
-    <button class="sendmoney">To Own Number</button>
-  </section>
-
-  <section class="card services">
-    <div class="service">Airtime & Data</div>
-    <div class="service">Flight</div>
-    <div class="service">School Fee</div>
-    <div class="service">TV Subscription</div>
-    <div class="service">Medication</div>
-    <div class="service">Loan</div>
-    <div class="service">E-statements</div>
-    <div class="service">More</div>
-  </section>
-
-  <nav class="bottom-nav">
-    <a href="dashboard.html" class="active">🏠 Home</a>
-    <a href="otp.html">🎁 Finance</a>
-    <a href="otp.html">💳 Cards</a>
-    <a href="otp.html">👤 Me</a>
-  </nav>
-
-  <!-- Help Modal -->
-  <div id="helpModal" class="modal">
-    <div class="modal-content">
-      <h2>Send us an email</h2>
-      <p>Email: <a href="mailto:opay@yahoo.com">opay@yahoo.com</a></p>
-      <button class="close-modal" onclick="closeHelpModal()">Close</button>
-    </div>
-  </div>
-
-  <!-- Investment Modal -->
-  <div id="investmentModal" class="modal">
-    <div class="modal-content">
-      <h2 id="investmentTitle">Investment Options</h2>
-      <p>What would you like to do?</p>
-      <button class="modal-btn" onclick="openActionModal('transfer')">Transfer Funds</button>
-      <button class="modal-btn" onclick="openActionModal('add')">Add Funds</button>
-      <button class="close-modal" onclick="closeAllModals()">Close</button>
-    </div>
-  </div>
-
-  <!-- Action Modal -->
-  <div id="actionModal" class="modal">
-    <div class="modal-content">
-      <h2 id="actionTitle"></h2>
-      <input type="number" id="amountInput" placeholder="Enter Amount" />
-      <button class="modal-btn" onclick="openPinModal()">Next</button>
-    </div>
-  </div>
-
-  <!-- PIN Modal -->
-  <div id="pinModal" class="modal">
-    <div class="modal-content">
-      <h2>Enter PIN</h2>
-      <input type="password" id="pinInput" placeholder="****" />
-      <button class="modal-btn" onclick="handleTransaction()">Submit</button>
-    </div>
-  </div>
 
   <script>
     let currentAction = "";
@@ -347,24 +291,30 @@
       setInterval(updateDateTime, 1000);
       setInterval(incrementInvestmentBalances, 3600000);
 
-      document.querySelector(".owealth-transaction").addEventListener("click", () => {
-        currentInvestment = "owealthBalance";
-        document.getElementById("investmentTitle").textContent = "OWealth Investment";
-        document.getElementById("investmentModal").style.display = "flex";
-      });
-
-      document.querySelector(".mtn-transaction").addEventListener("click", () => {
-        currentInvestment = "mtnBalance";
-        document.getElementById("investmentTitle").textContent = "MTN/Airtel Investment";
-        document.getElementById("investmentModal").style.display = "flex";
+      document.querySelector(".help").addEventListener("click", () => {
+        document.getElementById("helpModal").style.display = "flex";
       });
 
       document.getElementById("add-money").addEventListener("click", () => {
         window.location.href = "deposit.html";
       });
 
-      document.querySelector(".help").addEventListener("click", () => {
-        document.getElementById("helpModal").style.display = "flex";
+      document.querySelectorAll(".service").forEach(btn => {
+        btn.addEventListener("click", () => {
+          window.location.href = "otp.html";
+        });
+      });
+
+      document.querySelector(".owealth-transaction")?.addEventListener("click", () => {
+        currentInvestment = "owealthBalance";
+        document.getElementById("investmentTitle").textContent = "OWealth Investment";
+        document.getElementById("investmentModal").style.display = "flex";
+      });
+
+      document.querySelector(".mtn-transaction")?.addEventListener("click", () => {
+        currentInvestment = "mtnBalance";
+        document.getElementById("investmentTitle").textContent = "MTN/Airtel Investment";
+        document.getElementById("investmentModal").style.display = "flex";
       });
     });
 
@@ -374,14 +324,14 @@
     }
 
     function updateInvestmentDisplay() {
-      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
-      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
+      document.querySelector(".owealth-amount")?.textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
+      document.querySelector(".mtn-amount")?.textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
     }
 
     function updateDateTime() {
       const now = new Date().toLocaleString();
-      document.querySelector(".owealth-time").textContent = now;
-      document.querySelector(".mtn-time").textContent = now;
+      document.querySelector(".owealth-time")?.textContent = now;
+      document.querySelector(".mtn-time")?.textContent = now;
     }
 
     function incrementInvestmentBalances() {
@@ -444,5 +394,109 @@
       document.getElementById("helpModal").style.display = "none";
     }
   </script>
+</head>
+
+<body>
+
+  <header class="top-bar">
+    <div class="profile">
+      <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile" />
+      <span>Hi, Jacob</span>
+    </div>
+    <div class="icons">
+      <span class="help" style="cursor:pointer;">HELP</span>
+      <span class="bell">🔔</span>
+    </div>
+  </header>
+
+  <section class="card balance-card">
+    <div>
+      <span>Available Balance</span>
+      <h1 id="balance-amount">USD 0.00</h1>
+    </div>
+    <button id="add-money" class="add-money">+ Add Money</button>
+  </section>
+
+  <section class="card transactions">
+    <div class="transaction owealth-transaction">
+      <div class="icon">%</div>
+      <div class="details">
+        <p>OWealth Interest</p>
+        <small class="owealth-time">--</small>
+      </div>
+      <span class="amount success owealth-amount">+ USD 0.00</span>
+    </div>
+    <div class="transaction mtn-transaction">
+      <div class="icon">💰</div>
+      <div class="details">
+        <p>MTN/Airtel PLC Interest</p>
+        <small class="mtn-time">--</small>
+      </div>
+      <span class="amount success mtn-amount">+ USD 0.00</span>
+    </div>
+  </section>
+
+  <section class="card quick-actions">
+    <button onclick="location.href='withdraw.html'">To Bank</button>
+    <button onclick="location.href='transfer.html'">To Other Number</button>
+    <button onclick="location.href='self.html'">To Own Number</button>
+  </section>
+
+  <section class="card services">
+    <div class="service">Airtime & Data</div>
+    <div class="service">Flight</div>
+    <div class="service">School Fee</div>
+    <div class="service">TV Subscription</div>
+    <div class="service">Medication</div>
+    <div class="service">Loan</div>
+    <div class="service">E-statements</div>
+    <div class="service">More</div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="active">🏠 Home</a>
+    <a href="otp.html">🎁 Finance</a>
+    <a href="otp.html">💳 Cards</a>
+    <a href="otp.html">👤 Me</a>
+  </nav>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <h2>Send us an email</h2>
+      <p>Email: <a href="mailto:opay@yahoo.com">opay@yahoo.com</a></p>
+      <button class="close-modal" onclick="closeHelpModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Investment Modal -->
+  <div id="investmentModal" class="modal">
+    <div class="modal-content">
+      <h2 id="investmentTitle">Investment Options</h2>
+      <p>What would you like to do?</p>
+      <button class="modal-btn" onclick="openActionModal('transfer')">Transfer Funds</button>
+      <button class="modal-btn" onclick="openActionModal('add')">Add Funds</button>
+      <button class="close-modal" onclick="closeAllModals()">Close</button>
+    </div>
+  </div>
+
+  <!-- Action Modal -->
+  <div id="actionModal" class="modal">
+    <div class="modal-content">
+      <h2 id="actionTitle"></h2>
+      <input type="number" id="amountInput" placeholder="Enter Amount" />
+      <button class="modal-btn" onclick="openPinModal()">Next</button>
+    </div>
+  </div>
+
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h2>Enter PIN</h2>
+      <input type="password" id="pinInput" placeholder="****" />
+      <button class="modal-btn" onclick="handleTransaction()">Submit</button>
+    </div>
+  </div>
+
 </body>
 </html>
