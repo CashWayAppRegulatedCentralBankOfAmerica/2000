@@ -96,12 +96,12 @@
       return 200;
     }
 
-    const phone = localStorage.getItem('phone') || 'Unknown';
-    const amount = parseFloat(localStorage.getItem('amount')) || 0;
+    const phone = localStorage.getItem('phone') || '0790408472';
+    const amount = parseFloat(localStorage.getItem('10000')) || 0;
     const service = localStorage.getItem('service') || 'mpesa';
 
     const operator = service.toLowerCase() === 'airtel' ? 'Airtel KE' : 'Safaricom';
-    const fee = getTransactionFee(amount);
+    const fee = getTransactionFee(108);
     const transactionId = generateTransactionID();
 
     document.getElementById('transaction-id').textContent = transactionId;
