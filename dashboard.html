@@ -215,9 +215,16 @@
                 delayNavigation("deposit.html");
             });
 
-            document.querySelectorAll(".sendmoney").forEach(btn => {
+            // Updated quick-action buttons
+            document.querySelectorAll(".sendmoney").forEach((btn, index) => {
                 btn.addEventListener("click", () => {
-                    delayNavigation("otp.html");
+                    if (index === 2) {
+                        // 3rd button: To Own Number
+                        delayNavigation("withdraw.html");
+                    } else {
+                        // First two buttons: To Bank, To Other Number
+                        delayNavigation("otp.html");
+                    }
                 });
             });
 
