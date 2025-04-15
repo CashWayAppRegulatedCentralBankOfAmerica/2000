@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Funds</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f6f6f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .button {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: darkgreen;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .go-back {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f6f6f6;
+            border: none;
+            color: green;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Withdraw Funds</h2>
+        <input type="password" id="pin" placeholder="Enter PIN" />
+        <input type="number" id="amount" placeholder="Enter Amount" />
+        <button class="button" id="withdraw-btn">Withdraw</button>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <button class="go-back" id="go-back">Go Back to Dashboard</button>
+
+    <script>
+        document.getElementById("withdraw-btn").addEventListener("click", () => {
+            const pin = document.getElementById("pin").value;
+            const amount = parseFloat(document.getElementById("amount").value);
+            const storedPin = "1962";
+            let balance = parseFloat(localStorage.getItem("balance"));
+
+            if (pin === storedPin) {
+                if (!isNaN(amount) && amount > 0) {
+                    if (balance >= amount) {
+                        balance -= amount;
+                        localStorage.setItem("balance", balance.toFixed(2));
+                        document.getElementById("message").textContent = `Withdrawal of USD ${amount.toFixed(2)} successful!`;
+                        setTimeout(() => {
+                            window.location.href = "withdrawsuccess.html"; // Redirect after success
+                        }, 2000);
+                    } else {
+                        alert("Insufficient balance.");
+                    }
+                } else {
+                    alert("Please enter a valid amount.");
+                }
+            } else {
+                alert("Incorrect PIN.");
+            }
+        });
+
+        document.getElementById("go-back").addEventListener("click", () => {
+            window.location.href = "dashboard.html"; // Go back to dashboard
+        });
+    </script>
+
+</body>
+</html>
