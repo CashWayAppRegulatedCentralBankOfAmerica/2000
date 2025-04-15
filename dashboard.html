@@ -80,6 +80,7 @@
       margin-top: 10px;
     }
 
+    /* Transaction Styling */
     .transactions .transaction {
       display: flex;
       align-items: center;
@@ -87,13 +88,10 @@
       padding: 12px 0;
       border-bottom: 1px solid #eee;
       flex-wrap: wrap;
+      align-items: center; /* Ensure vertical alignment */
     }
 
-    .transactions .transaction:last-child {
-      border: none;
-    }
-
-    .transaction .icon {
+    .transactions .transaction .icon {
       width: 30px;
       height: 30px;
       background: #ddd;
@@ -101,18 +99,23 @@
       line-height: 30px;
       border-radius: 50%;
       flex-shrink: 0;
+      margin-right: 12px; /* Add space between icon and details */
     }
 
-    .transaction .details {
+    .transactions .transaction .details {
       flex-grow: 1;
       margin-left: 10px;
+      margin-bottom: 0;
     }
 
-    .amount.success {
-      color: #6cbf2b;
+    .transactions .transaction .amount {
       font-weight: bold;
       flex-shrink: 0;
-      margin-left: 10px;
+    }
+
+    .transactions .transaction .amount.success {
+      color: #6cbf2b;
+      margin-left: auto; /* Align amount to the right */
     }
 
     .quick-actions {
@@ -203,6 +206,21 @@
 
       .balance-card .add-money {
         width: 100%;
+      }
+
+      /* Adjust transaction layout on mobile */
+      .transactions .transaction {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .transactions .transaction .icon {
+        margin-right: 0;
+        margin-bottom: 8px;
+      }
+
+      .transactions .transaction .amount {
+        margin-top: 10px;
       }
     }
 
