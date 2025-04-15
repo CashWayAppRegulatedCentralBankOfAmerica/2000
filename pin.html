@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Enter Bank PIN</title>
+  <title>Enter PIN</title>
   <style>
     * {
       box-sizing: border-box;
@@ -37,20 +37,20 @@
     }
 
     p {
-      color: #555;
       margin-bottom: 1.5rem;
+      color: #555;
     }
 
     input {
       padding: 0.75rem;
       font-size: 1.2rem;
-      width: 100%;
-      max-width: 200px;
       text-align: center;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 1rem;
+      letter-spacing: 0.3em;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       outline: none;
+      margin-bottom: 1rem;
     }
 
     button {
@@ -60,9 +60,9 @@
       border: none;
       border-radius: 10px;
       font-size: 1rem;
+      width: 100%;
       cursor: pointer;
       transition: background-color 0.3s;
-      width: 100%;
     }
 
     button:hover {
@@ -73,56 +73,55 @@
       color: red;
       font-size: 0.9rem;
       margin-bottom: 1rem;
+      display: none;
     }
 
     .back {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
     }
 
     .back a {
       color: #007e45;
       text-decoration: none;
       font-size: 0.95rem;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Enter Your Bank PIN</h2>
-    <p>Please enter your 4-digit PIN to proceed</p>
+    <h2>Enter PIN</h2>
+    <p>Please enter your 4-digit bank PIN to continue</p>
 
     <input type="password" id="pin" maxlength="4" placeholder="••••" />
-    <div class="error" id="error-msg" style="display: none;">Incorrect PIN. Try again.</div>
+    <div class="error" id="error-msg">Incorrect PIN. Try again.</div>
 
-    <button onclick="validatePIN()">Confirm</button>
+    <button onclick="verifyPIN()">Confirm</button>
 
     <div class="back">
-      <a onclick="goToDashboard()">← Back to Dashboard</a>
+      <a href="#" onclick="goToDashboard(event)">&larr; Back to Dashboard</a>
     </div>
   </div>
 
   <script>
-    function validatePIN() {
-      const pinInput = document.getElementById("pin").value.trim();
+    function verifyPIN() {
+      const pin = document.getElementById("pin").value;
       const error = document.getElementById("error-msg");
 
-      if (pinInput === "1962") {
+      if (pin === "1962") {
         error.style.display = "none";
-        alert("PIN Verified ✅");
-
         setTimeout(() => {
           window.location.href = "success.html";
-        }, 1000); // 1 second delay
+        }, 1000);
       } else {
         error.style.display = "block";
       }
     }
 
-    function goToDashboard() {
+    function goToDashboard(event) {
+      event.preventDefault();
       setTimeout(() => {
         window.location.href = "dashboard.html";
-      }, 1000); // 1 second delay
+      }, 1000);
     }
   </script>
 </body>
