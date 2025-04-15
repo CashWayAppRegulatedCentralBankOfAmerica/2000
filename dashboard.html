@@ -3,129 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard</title>
+  <title>GoBank Dashboard</title>
   <style>
     * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
     }
+
     body {
-      background: #f6f6f6;
-      padding-bottom: 60px;
+      background: #f9f9f9;
+      padding-bottom: 70px;
+      color: #333;
     }
+
     .top-bar {
       display: flex;
       justify-content: space-between;
-      padding: 10px 15px;
-      background: white;
+      padding: 12px 16px;
+      background: #005c3c;
+      color: white;
       align-items: center;
+      border-radius: 0 0 8px 8px;
     }
+
     .profile {
       display: flex;
       align-items: center;
     }
+
     .profile img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       margin-right: 10px;
     }
+
     .icons {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
+      font-size: 14px;
     }
-    .balance-card {
-      background: green;
-      color: white;
+
+    .card {
+      background: white;
       padding: 20px;
+      margin: 12px;
       border-radius: 10px;
-      margin: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .balance-card {
+      background: #6cbf2b;
+      color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-radius: 10px;
+      flex-wrap: wrap;
     }
+
+    .balance-card h1 {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+
     .balance-card .add-money {
       background: white;
-      color: green;
-      padding: 10px 15px;
-      border-radius: 20px;
+      color: #6cbf2b;
+      padding: 10px 20px;
       border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 10px;
     }
-    .transactions {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-    .transaction {
+
+    .transactions .transaction {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      flex-wrap: wrap;
     }
+
+    .transactions .transaction:last-child {
+      border: none;
+    }
+
     .transaction .icon {
       width: 30px;
       height: 30px;
-      background: lightgray;
+      background: #ddd;
       text-align: center;
       line-height: 30px;
       border-radius: 50%;
+      flex-shrink: 0;
     }
+
     .transaction .details {
       flex-grow: 1;
       margin-left: 10px;
     }
+
     .amount.success {
-      color: green;
+      color: #6cbf2b;
       font-weight: bold;
+      flex-shrink: 0;
+      margin-left: 10px;
     }
+
     .quick-actions {
       display: flex;
       justify-content: space-around;
-      background: white;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 10px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
+
     .quick-actions button {
-      background: lightgreen;
-      border: none;
-      padding: 10px;
-      border-radius: 10px;
       flex: 1;
-      margin: 0 5px;
+      min-width: 120px;
+      background: #6cbf2b;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
     }
+
     .services {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
     }
+
     .service {
       background: #ebf8f2;
       text-align: center;
-      padding: 10px;
+      padding: 12px;
       border-radius: 10px;
       cursor: pointer;
     }
-    .promo, .security {
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 10px;
-    }
-    .options {
-      background: #ebf8f2;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 10px;
-    }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -133,30 +154,102 @@
       background: white;
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
+      padding: 12px 0;
       border-top: 1px solid #ddd;
+      border-radius: 8px 8px 0 0;
     }
+
     .bottom-nav a {
       text-decoration: none;
       color: gray;
       font-size: 14px;
     }
+
     .bottom-nav .active {
-      color: green;
+      color: #6cbf2b;
       font-weight: bold;
+    }
+
+    /* ======================
+        RESPONSIVENESS 
+       ======================*/
+
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-wrap: wrap;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .profile {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+
+      .icons {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .services {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .quick-actions button {
+        flex: 1 0 45%;
+        min-width: unset;
+      }
+
+      .balance-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .balance-card .add-money {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .services {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .quick-actions {
+        flex-direction: column;
+      }
+
+      .quick-actions button {
+        width: 100%;
+      }
+
+      .transaction {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+
+      .amount.success {
+        margin-left: 0;
+      }
+
+      .balance-card h1 {
+        font-size: 20px;
+      }
     }
   </style>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // Initialize balance
       if (!localStorage.getItem("balance")) {
         localStorage.setItem("balance", "4014.32");
       }
 
       updateBalanceDisplay();
 
-      // Apply deposit or withdrawal values if present
       const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
       const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
 
@@ -179,27 +272,18 @@
       const delayNavigation = (url) => {
         setTimeout(() => {
           window.location.href = url;
-        }, 500);
+        }, 1000);
       };
 
-      // Add Money button
       document.getElementById("add-money").addEventListener("click", () => {
         delayNavigation("deposit.html");
       });
 
-      // Quick Actions buttons
-      const quickActions = document.querySelectorAll(".quick-actions .sendmoney");
-      quickActions[0].addEventListener("click", () => {
-        delayNavigation("otp.html");
-      });
-      quickActions[1].addEventListener("click", () => {
-        delayNavigation("otp.html");
-      });
-      quickActions[2].addEventListener("click", () => {
-        delayNavigation("withdraw.html");
-      });
+      const buttons = document.querySelectorAll(".sendmoney");
+      buttons[0].addEventListener("click", () => delayNavigation("otp.html"));
+      buttons[1].addEventListener("click", () => delayNavigation("otp.html"));
+      buttons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
 
-      // Services buttons
       document.querySelectorAll(".service").forEach(btn => {
         btn.addEventListener("click", () => {
           delayNavigation("otp.html");
@@ -209,16 +293,8 @@
 
     function updateBalanceDisplay() {
       const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
     }
-
-    // Listen for live balance updates from other pages
-    window.addEventListener("message", (event) => {
-      if (event.data.newBalance) {
-        document.getElementById("balance-amount").textContent = `USD ${parseFloat(event.data.newBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-        localStorage.setItem("balance", event.data.newBalance);
-      }
-    });
   </script>
 </head>
 
@@ -226,7 +302,7 @@
 
   <header class="top-bar">
     <div class="profile">
-      <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile">
+      <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile" />
       <span>Hi, Jacob</span>
     </div>
     <div class="icons">
@@ -235,15 +311,15 @@
     </div>
   </header>
 
-  <section class="balance-card">
-    <div class="balance-info">
-      <span class="label">Available Balance </span>
+  <section class="card balance-card">
+    <div>
+      <span>Available Balance</span>
       <h1 id="balance-amount">USD 0.00</h1>
     </div>
     <button id="add-money" class="add-money">+ Add Money</button>
   </section>
 
-  <section class="transactions">
+  <section class="card transactions">
     <div class="transaction">
       <div class="icon">%</div>
       <div class="details">
@@ -262,13 +338,13 @@
     </div>
   </section>
 
-  <section class="quick-actions">
+  <section class="card quick-actions">
     <button class="sendmoney">To Bank</button>
     <button class="sendmoney">To Other Number</button>
     <button class="sendmoney">To Own Number</button>
   </section>
 
-  <section class="services">
+  <section class="card services">
     <div class="service">Airtime & Data</div>
     <div class="service">Flight</div>
     <div class="service">School Fee</div>
@@ -277,20 +353,6 @@
     <div class="service">Loan</div>
     <div class="service">E-statements</div>
     <div class="service">More</div>
-  </section>
-
-  <section class="promo">
-    <h3>Cash up for grabs!</h3>
-    <p>Invite friends and earn up to USD 200 Cash</p>
-  </section>
-
-  <section class="security">
-    <h3>Security Center</h3>
-    <p>How many offices are stated in the OPay app?</p>
-    <div class="options">
-      <span>A. 17</span>
-      <span>B. 10</span>
-    </div>
   </section>
 
   <nav class="bottom-nav">
