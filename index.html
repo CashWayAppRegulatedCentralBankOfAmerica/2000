@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GoBank Login</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
     * {
       box-sizing: border-box;
@@ -47,9 +48,16 @@
       background-color: transparent;
       border: 2px solid white;
       color: white;
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 6px;
-      cursor: default;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .register-btn:hover {
+      background-color: white;
+      color: #005c3c;
     }
 
     .login-card {
@@ -117,22 +125,14 @@
     }
 
     @media (max-width: 480px) {
-      .login-card {
-        padding: 15px;
-      }
-
-      .login-btn {
-        font-size: 14px;
-      }
-
-      .toggle-visibility {
-        top: 8px;
+      .register-btn {
+        font-size: 12px;
+        padding: 5px 10px;
       }
     }
   </style>
 </head>
 <body>
-
   <div id="login-section">
     <div class="container">
       <div class="header">
@@ -161,30 +161,26 @@
   </div>
 
   <script>
-    function handleLogin(e) {
-      e.preventDefault();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorDiv = document.getElementById("error");
+    function togglePassword() {
+      const password = document.getElementById("password");
+      password.type = password.type === "password" ? "text" : "password";
+    }
 
-      if (username === "JacobAmaitsa" && password === "JacobAmaitsa001") {
-        errorDiv.textContent = "";
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1000);
+    function handleLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      if (username && password) {
+        window.location.href = "dashboard.html";
       } else {
-        errorDiv.textContent = "Invalid username or password.";
+        document.getElementById("error").innerText = "Please fill in both fields.";
       }
     }
 
-    function togglePassword() {
-      const pass = document.getElementById("password");
-      pass.type = pass.type === "password" ? "text" : "password";
-    }
-
     function redirectToRegister() {
-      // Placeholder for register redirect
-      alert("Register feature coming soon.");
+      setTimeout(() => {
+        window.location.href = "register.html";
+      }, 1000); // 1-second delay
     }
   </script>
 </body>
