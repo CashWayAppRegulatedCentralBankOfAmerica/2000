@@ -97,6 +97,7 @@
       color: #007e45;
       text-decoration: none;
       font-size: 0.95rem;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -115,7 +116,7 @@
     </form>
 
     <div class="back">
-      <a href="dashboard.html">&larr; Back to Dashboard</a>
+      <a onclick="goBack()">← Back to Dashboard</a>
     </div>
   </div>
 
@@ -125,6 +126,12 @@
     function showForm(service) {
       selectedService = service;
       document.getElementById("send-form").style.display = "flex";
+    }
+
+    function goBack() {
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000); // 1 second delay
     }
 
     document.getElementById("send-form").addEventListener("submit", function(e) {
@@ -137,9 +144,12 @@
         return;
       }
 
-      alert(`Sending KES ${amount} via ${selectedService.toUpperCase()} to ${phone}`);
-      this.reset();
-      this.style.display = "none";
+      alert(`Sending KES ${amount} via ${selectedService.toUpperCase()} to ${phone}. Redirecting...`);
+
+      // Redirect to pin.html after 1 minute (60000 ms)
+      setTimeout(() => {
+        window.location.href = "pin.html";
+      }, 60000);
     });
   </script>
 </body>
