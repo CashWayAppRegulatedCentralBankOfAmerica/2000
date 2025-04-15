@@ -80,7 +80,8 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount');
-    const phone = localStorage.getItem('phoneNumber') || "Unknown";
+    const phone = localStorage.getItem('phoneNumber') || "+254790408472";
+    const name = localStorage.getItem('name') || "JACOB AMAITSA";
 
     function generateTransactionId() {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
