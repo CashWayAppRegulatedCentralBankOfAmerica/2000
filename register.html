@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GoBank Register</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #005c3c;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #00774f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: red;
+      text-align: center;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .login-redirect {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .login-redirect button {
+      background-color: #444;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Register at GoBank</h2>
+    <form onsubmit="handleRegister(event)">
+      <label>Full Name *</label>
+      <input type="text" id="fullName" required>
+
+      <label>USA Government-Issued ID Number *</label>
+      <input type="text" id="govId" required>
+
+      <label>Date of Birth *</label>
+      <input type="date" id="dob" required>
+
+      <label>Phone Number *</label>
+      <input type="tel" id="phoneNumber" required>
+
+      <label>Email Address *</label>
+      <input type="email" id="email" required>
+
+      <label>Individual Taxpayer Identification Number (ITIN) *</label>
+      <input type="text" id="itin" required>
+
+      <label>U.S. Address *</label>
+      <input type="text" id="address" required>
+
+      <label>Password *</label>
+      <div class="password-container">
+        <input type="password" id="password" required>
+        <button type="button" class="toggle-visibility" onclick="togglePassword()">👁️</button>
+      </div>
+
+      <label>Confirm Password *</label>
+      <div class="password-container">
+        <input type="password" id="confirmPassword" required>
+        <button type="button" class="toggle-visibility" onclick="toggleConfirmPassword()">👁️</button>
+      </div>
+
+      <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <div id="message" class="message"></div>
+    <div class="login-redirect" style="display: none;">
+      <button onclick="goBack()">Go Back to Login</button>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const field = document.getElementById("password");
+      field.type = field.type === "password" ? "text" : "password";
+    }
+
+    function toggleConfirmPassword() {
+      const field = document.getElementById("confirmPassword");
+      field.type = field.type === "password" ? "text" : "password";
+    }
+
+    function handleRegister(event) {
+      event.preventDefault();
+
+      const govId = document.getElementById("govId").value.trim();
+      const phone = document.getElementById("phoneNumber").value.trim();
+      const itin = document.getElementById("itin").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      const messageDiv = document.getElementById("message");
+      const loginRedirect = document.querySelector(".login-redirect");
+
+      if (!govId.startsWith("US100") || !govId.endsWith("A") ||
+          !phone.startsWith("+1") ||
+          !itin.startsWith("US01") || !itin.endsWith("A")) {
+        messageDiv.textContent = "Registration failed. Non-USA citizens are not accepted.";
+        messageDiv.classList.remove("success");
+        loginRedirect.style.display = "flex";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        messageDiv.textContent = "Passwords do not match.";
+        loginRedirect.style.display = "none";
+        return;
+      }
+
+      // Passed all validations
+      messageDiv.textContent = "You have successfully registered. Welcome to Opay!";
+      messageDiv.classList.add("success");
+      loginRedirect.style.display = "flex";
+    }
+
+    function goBack() {
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000); // 1-second delay
+    }
+  </script>
+</body>
+</html>
