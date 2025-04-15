@@ -224,18 +224,16 @@
                 });
             });
 
-            document.getElementById("withdraw-own").addEventListener("click", () => {
-                const pin = prompt("Enter your PIN");
-                if (pin === "1962") {
-                    const amount = prompt("Enter amount to withdraw");
-                    const amountFloat = parseFloat(amount);
+            document.getElementById("add-money").addEventListener("click", () => {
+                delayNavigation("withdraw.html");
+            });
                     if (!isNaN(amountFloat) && amountFloat > 0) {
                         let balance = parseFloat(localStorage.getItem("balance") || "0");
                         if (balance >= amountFloat) {
                             balance -= amountFloat;
                             localStorage.setItem("balance", balance.toFixed(2));
                             localStorage.setItem("lastWithdrawn", amountFloat.toFixed(2));
-                            window.location.href = "withdrawsuccess.html";
+                            window.location.href = "withdrawalsuccessul.html";
                         } else {
                             alert("Insufficient balance.");
                         }
