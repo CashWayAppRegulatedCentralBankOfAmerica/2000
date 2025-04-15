@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Withdrawal Successful</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0fff6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .success-container {
+      background-color: white;
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #00a859;
+      margin-bottom: 1rem;
+    }
+
+    .details {
+      text-align: left;
+      margin-top: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .details span {
+      font-weight: bold;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      background-color: #00a859;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+
+    .back-btn:hover {
+      background-color: #007e45;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <h2>Withdrawal Successful</h2>
+    <p id="message"></p>
+
+    <div class="details">
+      <p><span>Transaction ID:</span> <span id="transaction-id"></span></p>
+      <p><span>Amount Withdrawn:</span> KES <span id="withdrawn-amount"></span></p>
+      <p><span>Phone Number:</span> *******103</p>
+    </div>
+
+    <button class="back-btn" onclick="redirectToDashboard()">Go to Dashboard</button>
+  </div>
+
+  <script>
+    function generateTransactionID() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    const withdrawnAmount = localStorage.getItem('withdrawAmount') || 0;
+    const transactionId = generateTransactionID();
+
+    document.getElementById('transaction-id').textContent = transactionId;
+    document.getElementById('withdrawn-amount').textContent = withdrawnAmount;
+    document.getElementById('message').textContent = `A total of KES ${withdrawnAmount} has been successfully withdrawn from your account.`;
+
+    function redirectToDashboard() {
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
