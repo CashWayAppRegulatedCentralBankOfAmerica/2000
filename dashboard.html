@@ -204,7 +204,7 @@
       color: #555;
     }
 
-    .close-modal {
+    .modal-content .close-modal {
       margin-top: 20px;
       background-color: #6cbf2b;
       color: #fff;
@@ -301,7 +301,7 @@
       <div class="icon">%</div>
       <div class="details">
         <p>OWealth Interest</p>
-        <small id="owealth-time">April 1st, 02:47:46</small>
+        <small id="owealth-time"></small>
       </div>
       <span id="owealth-amount" class="amount success">+ USD 162.09</span>
     </div>
@@ -309,7 +309,7 @@
       <div class="icon">💰</div>
       <div class="details">
         <p>MTN/Airtel PLC Interest</p>
-        <small id="mtn-time">April 1st, 15:24:16</small>
+        <small id="mtn-time"></small>
       </div>
       <span id="mtn-amount" class="amount success">+ USD 188.40</span>
     </div>
@@ -355,25 +355,8 @@
       }
 
       updateBalanceDisplay();
-
-      const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
-      const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
-
-      if (deposit > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance += deposit;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("depositAmount");
-      }
-
-      if (withdraw > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance -= withdraw;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("withdrawAmount");
-      }
-
-      updateBalanceDisplay();
+      setInterval(updateInvestments, 3600000); // Update every hour (3600000 ms)
+      updateInvestments(); // Call once to initialize the investments
 
       const delayNavigation = (url) => {
         setTimeout(() => {
@@ -406,9 +389,29 @@
       document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
     }
 
+    function updateInvestments() {
+      const now = new Date();
+      const timeStr = now.toLocaleString();
+      document.getElementById("owealth-time").textContent = `Last Update: ${timeStr}`;
+      document.getElementById("mtn-time").textContent = `Last Update: ${timeStr}`;
+
+      let owealthAmount = parseFloat(localStorage.getItem("owealthAmount") || "162.09");
+      let mtnAmount = parseFloat(localStorage.getItem("mtnAmount") || "188.40");
+
+      owealthAmount += 0.20;
+      mtnAmount += 0.20;
+
+      localStorage.setItem("owealthAmount", owealthAmount.toFixed(2));
+      localStorage.setItem("mtnAmount", mtnAmount.toFixed(2));
+
+      document.getElementById("owealth-amount").textContent = `+ USD ${owealthAmount.toFixed(2)}`;
+      document.getElementById("mtn-amount").textContent = `+ USD ${mtnAmount.toFixed(2)}`;
+    }
+
     function closeHelpModal() {
       document.getElementById("helpModal").style.display = "none";
     }
   </script>
+
 </body>
 </html>
