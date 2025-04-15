@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deposit Money</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0fff6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #00a859;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .btn-submit {
+      background-color: #00a859;
+      color: white;
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-submit:hover {
+      background-color: #007e45;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: gray;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Deposit to Your Account</h2>
+    <form id="depositForm">
+      <label for="phone">From MPESA Number (Allowed: 0100110103)</label>
+      <input type="tel" id="phone" placeholder="Enter MPESA number" required>
+
+      <label for="amount">Amount to Deposit (KES)</label>
+      <input type="number" id="amount" placeholder="Enter amount" required>
+
+      <button type="submit" class="btn-submit">Submit Deposit</button>
+      <p class="note">Only deposits from MPESA number 0100110103 will be accepted.</p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('depositForm');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const allowedNumber = '0100110103';
+      const phone = document.getElementById('phone').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+
+      if (phone !== allowedNumber) {
+        alert('Deposit is only allowed from MPESA number 0100110103');
+        return;
+      }
+
+      if (amount <= 0 || isNaN(amount)) {
+        alert('Please enter a valid deposit amount.');
+        return;
+      }
+
+      // Save deposit amount to localStorage
+      let balance = parseFloat(localStorage.getItem('balance')) || 0;
+      balance += amount;
+      localStorage.setItem('balance', balance.toFixed(2));
+      localStorage.setItem('depositAmount', amount);
+
+      // Delay and redirect
+      setTimeout(() => {
+        window.location.href = 'depositsuccessful.html';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
