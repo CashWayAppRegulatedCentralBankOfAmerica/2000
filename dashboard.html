@@ -170,6 +170,70 @@
       font-weight: bold;
     }
 
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-wrap: nowrap;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .profile {
+        justify-content: flex-start;
+      }
+
+      .icons {
+        justify-content: flex-end;
+        gap: 20px;
+      }
+
+      .services {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .quick-actions button {
+        flex: 1 0 45%;
+        min-width: unset;
+      }
+
+      .balance-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .balance-card .add-money {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .services {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .quick-actions {
+        flex-direction: column;
+      }
+
+      .quick-actions button {
+        width: 100%;
+      }
+
+      .transaction {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+
+      .amount.success {
+        margin-left: 0;
+      }
+
+      .balance-card h1 {
+        font-size: 20px;
+      }
+    }
+
     /* Modal Styling */
     .modal {
       display: none;
@@ -204,7 +268,7 @@
       color: #555;
     }
 
-    .modal-content .close-modal {
+    .close-modal {
       margin-top: 20px;
       background-color: #6cbf2b;
       color: #fff;
@@ -218,61 +282,70 @@
       from { transform: translateY(-50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
-    /* Mobile-friendly changes */
-    @media (max-width: 480px) {
-      .services {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .quick-actions {
-        flex-direction: column;
-      }
-
-      .quick-actions button {
-        width: 100%;
-      }
-
-      .transactions .transaction {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0;
-        padding: 10px 0;
-      }
-
-      .transaction .icon {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-        line-height: 28px;
-        margin-right: 8px;
-        flex-shrink: 0;
-      }
-
-      .transaction .details {
-        flex-grow: 1;
-        margin-left: 8px;
-        font-size: 14px;
-      }
-
-      .transaction .details p {
-        margin-bottom: 2px;
-        font-weight: 500;
-      }
-
-      .transaction .amount {
-        font-size: 14px;
-        white-space: nowrap;
-        margin-left: 10px;
-        font-weight: 600;
-      }
-
-      .balance-card h1 {
-        font-size: 20px;
-      }
-    }
   </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem("balance")) {
+        localStorage.setItem("balance", "4014.32");
+      }
+
+      updateBalanceDisplay();
+
+      const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
+      const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
+
+      if (deposit > 0) {
+        let balance = parseFloat(localStorage.getItem("balance"));
+        balance += deposit;
+        localStorage.setItem("balance", balance.toFixed(2));
+        localStorage.removeItem("depositAmount");
+      }
+
+      if (withdraw > 0) {
+        let balance = parseFloat(localStorage.getItem("balance"));
+        balance -= withdraw;
+        localStorage.setItem("balance", balance.toFixed(2));
+        localStorage.removeItem("withdrawAmount");
+      }
+
+      updateBalanceDisplay();
+
+      const delayNavigation = (url) => {
+        setTimeout(() => {
+          window.location.href = url;
+        }, 1000);
+      };
+
+      document.getElementById("add-money").addEventListener("click", () => {
+        delayNavigation("deposit.html");
+      });
+
+      const buttons = document.querySelectorAll(".sendmoney");
+      buttons[0].addEventListener("click", () => delayNavigation("otp.html"));
+      buttons[1].addEventListener("click", () => delayNavigation("otp.html"));
+      buttons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
+
+      document.querySelectorAll(".service").forEach(btn => {
+        btn.addEventListener("click", () => {
+          delayNavigation("otp.html");
+        });
+      });
+
+      document.querySelector(".help").addEventListener("click", () => {
+        document.getElementById("helpModal").style.display = "flex";
+      });
+    });
+
+    function updateBalanceDisplay() {
+      const balance = localStorage.getItem("balance") || "0.00";
+      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    }
+
+    function closeHelpModal() {
+      document.getElementById("helpModal").style.display = "none";
+    }
+  </script>
 </head>
 
 <body>
@@ -297,21 +370,21 @@
   </section>
 
   <section class="card transactions">
-    <div class="transaction" id="owealth-transaction">
+    <div class="transaction">
       <div class="icon">%</div>
       <div class="details">
         <p>OWealth Interest</p>
-        <small id="owealth-time"></small>
+        <small>April 1st, 02:47:46</small>
       </div>
-      <span id="owealth-amount" class="amount success">+ USD 162.09</span>
+      <span class="amount success">+ USD 162.09</span>
     </div>
-    <div class="transaction" id="mtn-transaction">
+    <div class="transaction">
       <div class="icon">💰</div>
       <div class="details">
         <p>MTN/Airtel PLC Interest</p>
-        <small id="mtn-time"></small>
+        <small>April 1st, 15:24:16</small>
       </div>
-      <span id="mtn-amount" class="amount success">+ USD 188.40</span>
+      <span class="amount success">+ USD 188.40</span>
     </div>
   </section>
 
@@ -339,27 +412,6 @@
     <a href="otp.html">👤 Me</a>
   </nav>
 
-  <!-- Transfer/Add Funds Modals -->
-  <div id="transferModal" class="modal">
-    <div class="modal-content">
-      <h2>Transfer Funds</h2>
-      <p>Enter amount to transfer:</p>
-      <input type="number" id="transfer-amount" placeholder="Amount in USD" />
-      <button class="close-modal" onclick="closeTransferModal()">Cancel</button>
-      <button class="close-modal" onclick="confirmTransfer()">Confirm Transfer</button>
-    </div>
-  </div>
-
-  <div id="addFundModal" class="modal">
-    <div class="modal-content">
-      <h2>Add Funds</h2>
-      <p>Enter amount to add:</p>
-      <input type="number" id="add-fund-amount" placeholder="Amount in USD" />
-      <button class="close-modal" onclick="closeAddFundModal()">Cancel</button>
-      <button class="close-modal" onclick="confirmAddFund()">Confirm Add Fund</button>
-    </div>
-  </div>
-
   <!-- Help Modal -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
@@ -368,114 +420,6 @@
       <button class="close-modal" onclick="closeHelpModal()">Close</button>
     </div>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!localStorage.getItem("balance")) {
-        localStorage.setItem("balance", "4014.32");
-      }
-
-      updateBalanceDisplay();
-      setInterval(updateInvestments, 3600000); // Update every hour (3600000 ms)
-      updateInvestments(); // Call once to initialize the investments
-
-      const delayNavigation = (url) => {
-        setTimeout(() => {
-          window.location.href = url;
-        }, 1000);
-      };
-
-      document.getElementById("add-money").addEventListener("click", () => {
-        delayNavigation("deposit.html");
-      });
-
-      const buttons = document.querySelectorAll(".sendmoney");
-      buttons[0].addEventListener("click", () => delayNavigation("otp.html"));
-      buttons[1].addEventListener("click", () => delayNavigation("otp.html"));
-      buttons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
-
-      document.querySelectorAll(".service").forEach(btn => {
-        btn.addEventListener("click", () => {
-          delayNavigation("otp.html");
-        });
-      });
-
-      document.querySelector(".help").addEventListener("click", () => {
-        document.getElementById("helpModal").style.display = "flex";
-      });
-
-      // Adding Transfer and Add Fund modals on investment click
-      document.getElementById("owealth-transaction").addEventListener("click", () => {
-        openTransferModal("owealth");
-      });
-
-      document.getElementById("mtn-transaction").addEventListener("click", () => {
-        openTransferModal("mtn");
-      });
-
-      // Start the live clock
-      setInterval(updateLiveTime, 1000); // Update every second
-    });
-
-    function updateBalanceDisplay() {
-      const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-    }
-
-    function updateLiveTime() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString();
-      document.getElementById("owealth-time").textContent = `Last Update: ${timeStr}`;
-      document.getElementById("mtn-time").textContent = `Last Update: ${timeStr}`;
-    }
-
-    function updateInvestments() {
-      let owealthAmount = parseFloat(localStorage.getItem("owealthAmount") || "162.09");
-      let mtnAmount = parseFloat(localStorage.getItem("mtnAmount") || "188.40");
-
-      owealthAmount += 0.20;
-      mtnAmount += 0.20;
-
-      localStorage.setItem("owealthAmount", owealthAmount.toFixed(2));
-      localStorage.setItem("mtnAmount", mtnAmount.toFixed(2));
-
-      document.getElementById("owealth-amount").textContent = `+ USD ${owealthAmount.toFixed(2)}`;
-      document.getElementById("mtn-amount").textContent = `+ USD ${mtnAmount.toFixed(2)}`;
-    }
-
-    // Modal functions
-    function openTransferModal(investmentType) {
-      document.getElementById("transferModal").style.display = "flex";
-    }
-
-    function closeTransferModal() {
-      document.getElementById("transferModal").style.display = "none";
-    }
-
-    function confirmTransfer() {
-      const amount = document.getElementById("transfer-amount").value;
-      alert(`Transfer of USD ${amount} confirmed`);
-      closeTransferModal();
-    }
-
-    function openAddFundModal() {
-      document.getElementById("addFundModal").style.display = "flex";
-    }
-
-    function closeAddFundModal() {
-      document.getElementById("addFundModal").style.display = "none";
-    }
-
-    function confirmAddFund() {
-      const amount = document.getElementById("add-fund-amount").value;
-      alert(`Add Funds of USD ${amount} confirmed`);
-      closeAddFundModal();
-    }
-
-    function closeHelpModal() {
-      document.getElementById("helpModal").style.display = "none";
-    }
-  </script>
 
 </body>
 </html>
