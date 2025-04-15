@@ -421,5 +421,140 @@
     </div>
   </div>
 
-</body>
-</html>
+  <!-- Investment Modal -->
+<div id="investmentModal" class="modal">
+    <div class="modal-content">
+      <h2 id="investmentTitle">Investment Options</h2>
+      <p>What would you like to do?</p>
+      <button class="modal-btn" onclick="openActionModal('transfer')">Transfer Funds</button>
+      <button class="modal-btn" onclick="openActionModal('add')">Add Funds</button>
+      <button class="close-modal" onclick="closeAllModals()">Close</button>
+    </div>
+  </div>
+  
+  <!-- Action Modal -->
+  <div id="actionModal" class="modal">
+    <div class="modal-content">
+      <h2 id="actionTitle"></h2>
+      <input type="number" id="amountInput" placeholder="Enter Amount" />
+      <button class="modal-btn" onclick="openPinModal()">Next</button>
+    </div>
+  </div>
+  
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h2>Enter PIN</h2>
+      <input type="password" id="pinInput" placeholder="****" />
+      <button class="modal-btn" onclick="handleTransaction()">Submit</button>
+    </div>
+  </div>
+  
+  <script>
+    let currentAction = "";
+    let currentInvestment = "";
+  
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem("balance")) localStorage.setItem("balance", "4014.32");
+      if (!localStorage.getItem("owealthBalance")) localStorage.setItem("owealthBalance", "162.09");
+      if (!localStorage.getItem("mtnBalance")) localStorage.setItem("mtnBalance", "188.40");
+  
+      updateBalanceDisplay();
+      updateInvestmentDisplay();
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+      setInterval(incrementInvestmentBalances, 3600000); // every hour
+  
+      document.getElementById("add-money").addEventListener("click", () => {
+        window.location.href = "deposit.html";
+      });
+  
+      document.querySelector(".owealth-transaction").addEventListener("click", () => {
+        currentInvestment = "owealthBalance";
+        document.getElementById("investmentTitle").textContent = "OWealth Investment";
+        document.getElementById("investmentModal").style.display = "flex";
+      });
+  
+      document.querySelector(".mtn-transaction").addEventListener("click", () => {
+        currentInvestment = "mtnBalance";
+        document.getElementById("investmentTitle").textContent = "MTN/Airtel Investment";
+        document.getElementById("investmentModal").style.display = "flex";
+      });
+    });
+  
+    function updateBalanceDisplay() {
+      const balance = parseFloat(localStorage.getItem("balance"));
+      document.getElementById("balance-amount").textContent = `USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    }
+  
+    function updateInvestmentDisplay() {
+      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
+      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
+    }
+  
+    function updateDateTime() {
+      const now = new Date().toLocaleString();
+      document.querySelector(".owealth-time").textContent = now;
+      document.querySelector(".mtn-time").textContent = now;
+    }
+  
+    function incrementInvestmentBalances() {
+      ["owealthBalance", "mtnBalance"].forEach(key => {
+        let val = parseFloat(localStorage.getItem(key));
+        val += 0.20;
+        localStorage.setItem(key, val.toFixed(2));
+      });
+      updateInvestmentDisplay();
+    }
+  
+    function openActionModal(action) {
+      currentAction = action;
+      document.getElementById("investmentModal").style.display = "none";
+      document.getElementById("actionModal").style.display = "flex";
+      document.getElementById("actionTitle").textContent = action === "transfer" ? "Transfer Funds" : "Add Funds";
+    }
+  
+    function openPinModal() {
+      document.getElementById("actionModal").style.display = "none";
+      document.getElementById("pinModal").style.display = "flex";
+    }
+  
+    function handleTransaction() {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      let investment = parseFloat(localStorage.getItem(currentInvestment));
+      let balance = parseFloat(localStorage.getItem("balance"));
+  
+      if (currentAction === "transfer") {
+        if (investment >= amount) {
+          investment -= amount;
+          balance += amount;
+        } else {
+          alert("Insufficient investment balance");
+          return;
+        }
+      } else if (currentAction === "add") {
+        if (balance >= amount) {
+          investment += amount;
+          balance -= amount;
+        } else {
+          alert("Insufficient main balance");
+          return;
+        }
+      }
+  
+      localStorage.setItem(currentInvestment, investment.toFixed(2));
+      localStorage.setItem("balance", balance.toFixed(2));
+  
+      updateBalanceDisplay();
+      updateInvestmentDisplay();
+      closeAllModals();
+    }
+  
+    function closeAllModals() {
+      document.querySelectorAll(".modal").forEach(modal => modal.style.display = "none");
+    }
+  </script>
+  
+  </body>
+  </html>
+  
