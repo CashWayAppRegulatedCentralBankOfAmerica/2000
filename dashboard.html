@@ -13,19 +13,19 @@
     }
 
     body {
-      background: #f9f9f9;
-      padding-bottom: 70px;
+      background: #f4f6f8;
       color: #333;
+      padding-bottom: 80px;
     }
 
     .top-bar {
       display: flex;
       justify-content: space-between;
-      padding: 12px 16px;
+      align-items: center;
       background: #005c3c;
       color: white;
-      align-items: center;
-      border-radius: 0 0 8px 8px;
+      padding: 16px 24px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .profile {
@@ -34,129 +34,132 @@
     }
 
     .profile img {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    .icons {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      margin: 12px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-right: 8px;
     }
 
     .balance-card {
       background: #6cbf2b;
       color: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-radius: 10px;
       flex-wrap: wrap;
     }
 
     .balance-card h1 {
-      font-size: 24px;
-      margin-top: 10px;
+      font-size: 28px;
+      margin: 10px 0;
     }
 
-    .balance-card .add-money {
+    .add-money {
       background: white;
       color: #6cbf2b;
       padding: 10px 20px;
       border: none;
-      border-radius: 20px;
+      border-radius: 25px;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .add-money:hover {
+      background: #e6f5dc;
+    }
+
+    .transactions, .quick-actions, .services {
+      background: white;
+      border-radius: 12px;
+      margin: 20px;
+      padding: 20px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
     }
 
     .transactions .transaction {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 0;
       border-bottom: 1px solid #eee;
-      flex-wrap: wrap;
+      padding: 10px 0;
     }
 
     .transactions .transaction:last-child {
-      border: none;
+      border-bottom: none;
     }
 
     .transaction .icon {
-      width: 30px;
-      height: 30px;
-      background: #ddd;
-      text-align: center;
-      line-height: 30px;
+      width: 34px;
+      height: 34px;
+      background: #c8e6c9;
       border-radius: 50%;
-      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
     }
 
     .transaction .details {
-      flex-grow: 1;
-      margin-left: 10px;
+      flex: 1;
+      margin-left: 12px;
     }
 
     .amount.success {
-      color: #6cbf2b;
+      color: #2e7d32;
       font-weight: bold;
-      flex-shrink: 0;
-      margin-left: 10px;
     }
 
     .quick-actions {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
     }
 
     .quick-actions button {
-      flex: 1;
-      min-width: 120px;
+      flex: 1 1 30%;
       background: #6cbf2b;
       color: white;
-      border: none;
       padding: 12px;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-weight: 500;
     }
 
     .services {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 12px;
     }
 
     .service {
-      background: #ebf8f2;
+      background: #e9f7ef;
+      padding: 14px;
       text-align: center;
-      padding: 12px;
       border-radius: 10px;
+      font-weight: 500;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .service:hover {
+      background: #d4efdf;
     }
 
     .bottom-nav {
       position: fixed;
       bottom: 0;
       width: 100%;
-      background: white;
       display: flex;
       justify-content: space-around;
+      background: white;
       padding: 12px 0;
-      border-top: 1px solid #ddd;
-      border-radius: 8px 8px 0 0;
+      border-top: 1px solid #ccc;
     }
 
     .bottom-nav a {
@@ -170,84 +173,23 @@
       font-weight: bold;
     }
 
-    /* ======================
-        RESPONSIVENESS 
-       ======================*/
-
     @media (max-width: 768px) {
-      .top-bar {
-        flex-wrap: wrap;
-        padding: 10px;
-        text-align: center;
-      }
-
-      .profile {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 8px;
-      }
-
-      .icons {
-        width: 100%;
-        justify-content: center;
-        gap: 20px;
-      }
-
-      .services {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .quick-actions button {
-        flex: 1 0 45%;
-        min-width: unset;
-      }
-
       .balance-card {
         flex-direction: column;
-        text-align: center;
-        gap: 10px;
-      }
-
-      .balance-card .add-money {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .services {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .quick-actions {
-        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
       }
 
       .quick-actions button {
-        width: 100%;
-      }
-
-      .transaction {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-      }
-
-      .amount.success {
-        margin-left: 0;
-      }
-
-      .balance-card h1 {
-        font-size: 20px;
+        flex: 1 1 48%;
       }
     }
   </style>
-
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (!localStorage.getItem("balance")) {
         localStorage.setItem("balance", "4014.32");
       }
-
       updateBalanceDisplay();
 
       const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
@@ -297,9 +239,7 @@
     }
   </script>
 </head>
-
 <body>
-
   <header class="top-bar">
     <div class="profile">
       <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile" />
@@ -311,7 +251,7 @@
     </div>
   </header>
 
-  <section class="card balance-card">
+  <section class="balance-card">
     <div>
       <span>Available Balance</span>
       <h1 id="balance-amount">USD 0.00</h1>
@@ -319,7 +259,7 @@
     <button id="add-money" class="add-money">+ Add Money</button>
   </section>
 
-  <section class="card transactions">
+  <section class="transactions">
     <div class="transaction">
       <div class="icon">%</div>
       <div class="details">
@@ -338,13 +278,13 @@
     </div>
   </section>
 
-  <section class="card quick-actions">
+  <section class="quick-actions">
     <button class="sendmoney">To Bank</button>
     <button class="sendmoney">To Other Number</button>
     <button class="sendmoney">To Own Number</button>
   </section>
 
-  <section class="card services">
+  <section class="services">
     <div class="service">Airtime & Data</div>
     <div class="service">Flight</div>
     <div class="service">School Fee</div>
@@ -361,6 +301,5 @@
     <a href="otp.html">💳 Cards</a>
     <a href="otp.html">👤 Me</a>
   </nav>
-
 </body>
 </html>
