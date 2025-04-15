@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Withdraw</title>
+  <title>Withdraw Funds</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -67,44 +67,168 @@
     button:hover {
       background-color: #007e45;
     }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .modal button {
+      width: 100%;
+      background-color: #00a859;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .modal button:hover {
+      background-color: #007e45;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
     <h2>Withdraw Funds</h2>
     <form id="withdrawForm">
-      <label for="amount">Enter Amount to Withdraw (KES)</label>
-      <input type="number" id="amount" name="amount" placeholder="e.g. 5000" required min="1"/>
-
-      <p class="info">Withdrawal will automatically be deducted from your primary number *******103</p>
-
+      <label for="amount">Enter Amount (KES)</label>
+      <input type="number" id="amount" name="amount" placeholder="e.g. 2000" required min="1"/>
+      <p class="info">Withdrawal will be deducted from your available balance.</p>
       <button type="submit">Submit Withdrawal</button>
     </form>
   </div>
 
+  <!-- PIN Modal -->
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h3>Enter your 4-digit PIN</h3>
+      <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="4" />
+      <button id="pinSubmit">Submit PIN</button>
+      <p id="errorMessage" class="error"></p>
+    </div>
+  </div>
+
+  <!-- Exceeded Attempts Modal -->
+  <div id="exceededAttemptsModal" class="modal">
+    <div class="modal-content">
+      <h3>You have exceeded the maximum PIN attempts</h3>
+      <p>Please try again after a while.</p>
+      <button onclick="closeExceededAttemptsModal()">Close</button>
+    </div>
+  </div>
+
   <script>
+    // Initialize attempts counter in localStorage (if it doesn't exist)
+    if (!localStorage.getItem('pinAttempts')) {
+      localStorage.setItem('pinAttempts', 0);
+    }
+
+    // Show PIN Modal
+    function showPinModal() {
+      document.getElementById('pinModal').style.display = 'flex';
+    }
+
+    // Hide PIN Modal
+    function hidePinModal() {
+      document.getElementById('pinModal').style.display = 'none';
+    }
+
+    // Show Exceeded Attempts Modal
+    function showExceededAttemptsModal() {
+      document.getElementById('exceededAttemptsModal').style.display = 'flex';
+    }
+
+    // Close Exceeded Attempts Modal
+    function closeExceededAttemptsModal() {
+      document.getElementById('exceededAttemptsModal').style.display = 'none';
+      localStorage.setItem('pinAttempts', 0); // Reset attempts
+    }
+
     document.getElementById('withdrawForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
+      // Check if attempts limit has been reached
+      let attempts = parseInt(localStorage.getItem('pinAttempts'));
+      if (attempts >= 3) {
+        showExceededAttemptsModal();
+        return; // Prevent form submission
+      }
+
       const amount = parseFloat(document.getElementById('amount').value);
 
-      if (!isNaN(amount) && amount > 0) {
-        // Fetch current balance from localStorage
-        let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+      // Retrieve current balance
+      let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
 
-        // Check if the user has enough balance
-        if (amount <= currentBalance) {
-          // Update balance after withdrawal
-          currentBalance -= amount;
-          localStorage.setItem('balance', currentBalance);
-          localStorage.setItem('withdrawAmount', amount);
+      // Check if the user has enough balance
+      if (amount <= currentBalance && amount > 0) {
+        showPinModal();
+        
+        // Handle PIN submission
+        document.getElementById('pinSubmit').onclick = function () {
+          const pin = document.getElementById('pinInput').value;
           
-          // Redirect with 1-second delay
-          setTimeout(() => {
-            window.location.href = 'withdrawalsuccessful.html';
-          }, 1000);
-        } else {
-          alert("Insufficient funds for this withdrawal.");
-        }
+          if (pin === "1962") {
+            // Deduct the withdrawal amount
+            let newBalance = currentBalance - amount;
+
+            // Store new balance
+            localStorage.setItem('balance', newBalance.toFixed(2));
+
+            // Reset attempts counter after successful withdrawal
+            localStorage.setItem('pinAttempts', 0);
+
+            // Hide PIN modal and proceed to success page
+            hidePinModal();
+            setTimeout(() => {
+              window.location.href = 'withdrawsuccessfully.html';
+            }, 1000);
+          } else {
+            // Increment failed attempts counter
+            let attempts = parseInt(localStorage.getItem('pinAttempts')) + 1;
+            localStorage.setItem('pinAttempts', attempts);
+
+            if (attempts >= 3) {
+              showExceededAttemptsModal(); // Show lockout modal
+              hidePinModal(); // Close PIN modal
+            } else {
+              document.getElementById('errorMessage').textContent = "Incorrect PIN. You have " + (3 - attempts) + " attempts left.";
+            }
+          }
+        };
+      } else {
+        alert("Insufficient balance or invalid amount!");
       }
     });
   </script>
