@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transaction Success</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f0fff6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+    }
+
+    .success-container {
+      background-color: white;
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #00a859;
+      margin-bottom: 1rem;
+    }
+
+    .details {
+      text-align: left;
+      margin-top: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .details span {
+      font-weight: bold;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      background-color: #00a859;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+
+    .back-btn:hover {
+      background-color: #007e45;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <h2>✅ Transaction Successful</h2>
+    <p id="message"></p>
+
+    <div class="details">
+      <p><span>Transaction ID:</span> <span id="transaction-id"></span></p>
+      <p><span>Phone Number:</span> <span id="phone"></span></p>
+      <p><span>Operator:</span> <span id="operator"></span></p>
+      <p><span>Transaction Fee:</span> KES <span id="fee"></span></p>
+    </div>
+
+    <button class="back-btn" onclick="redirectToDashboard()">Go to Dashboard</button>
+  </div>
+
+  <script>
+    function generateTransactionID() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    function getTransactionFee(amount) {
+      if (amount < 100) return 0;
+      if (amount < 1000) return 10;
+      if (amount < 10000) return 100;
+      return 200;
+    }
+
+    const phone = localStorage.getItem('phone') || 'Unknown';
+    const amount = parseFloat(localStorage.getItem('amount')) || 0;
+    const service = localStorage.getItem('service') || 'mpesa';
+
+    const operator = service.toLowerCase() === 'airtel' ? 'Airtel KE' : 'Safaricom';
+    const fee = getTransactionFee(amount);
+    const transactionId = generateTransactionID();
+
+    document.getElementById('transaction-id').textContent = transactionId;
+    document.getElementById('phone').textContent = phone;
+    document.getElementById('operator').textContent = operator;
+    document.getElementById('fee').textContent = fee;
+    document.getElementById('message').textContent = `Transaction of KES ${amount.toFixed(2)} was successful. Beneficiary will receive funds within 30 minutes.`;
+
+    function redirectToDashboard() {
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
