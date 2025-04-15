@@ -83,18 +83,56 @@
   </div>
 
   <script>
+    // Initialize attempts counter in localStorage (if it doesn't exist)
+    if (!localStorage.getItem('pinAttempts')) {
+      localStorage.setItem('pinAttempts', 0);
+    }
+
     document.getElementById('depositForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
+      // Check if attempts limit has been reached
+      let attempts = parseInt(localStorage.getItem('pinAttempts'));
+
+      if (attempts >= 3) {
+        alert("You have exceeded the maximum PIN attempts. Please try again later.");
+        return; // Prevent form submission
+      }
+
       const amount = parseFloat(document.getElementById('amount').value);
 
       if (!isNaN(amount) && amount > 0) {
-        // Save to localStorage to update balance later
-        localStorage.setItem('depositAmount', amount);
-        
-        // Redirect with 1 second delay
-        setTimeout(() => {
-          window.location.href = 'depositsuccessful.html';
-        }, 1000);
+        const pin = prompt("Enter your 4-digit PIN to confirm deposit:");
+
+        if (pin === "1962") {
+          // Retrieve current balance or default to 0
+          let currentBalance = parseFloat(localStorage.getItem('balance')) || 0;
+
+          // Add deposit amount
+          let newBalance = currentBalance + amount;
+
+          // Store new balance
+          localStorage.setItem('balance', newBalance.toFixed(2));
+          localStorage.setItem('depositAmount', amount.toFixed(2));
+
+          // Reset attempts counter after successful deposit
+          localStorage.setItem('pinAttempts', 0);
+
+          // Redirect to success page
+          setTimeout(() => {
+            window.location.href = 'depositsuccessful.html';
+          }, 1000);
+        } else {
+          // Increment the failed attempts counter
+          attempts++;
+          localStorage.setItem('pinAttempts', attempts);
+
+          if (attempts >= 3) {
+            alert("You have exceeded the maximum PIN attempts. Please try again later.");
+          } else {
+            alert("Incorrect PIN. You have " + (3 - attempts) + " attempts left.");
+          }
+        }
       }
     });
   </script>
