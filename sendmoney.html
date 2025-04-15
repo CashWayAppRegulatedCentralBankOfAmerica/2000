@@ -97,6 +97,7 @@
       color: #007e45;
       text-decoration: none;
       font-size: 0.95rem;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -115,7 +116,7 @@
     </form>
 
     <div class="back">
-      <a href="#" onclick="goToDashboard()">← Back to Dashboard</a>
+      <a onclick="goToDashboard()">← Back to Dashboard</a>
     </div>
   </div>
 
@@ -139,14 +140,9 @@
       const amount = document.getElementById("amount").value.trim();
 
       if (!phone || !amount) {
-        alert("Please enter both phone number and amount.");
         return;
       }
 
-      // Optional: show an alert before transition
-      alert(`Sending KES ${amount} via ${selectedService.toUpperCase()} to ${phone}`);
-
-      // Redirect to pin.html after 1 second
       setTimeout(() => {
         window.location.href = "pin.html";
       }, 1000);
