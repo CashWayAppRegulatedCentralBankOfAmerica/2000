@@ -382,6 +382,9 @@
       document.querySelector(".help").addEventListener("click", () => {
         document.getElementById("helpModal").style.display = "flex";
       });
+
+      // Start the live clock
+      setInterval(updateLiveTime, 1000); // Update every second
     });
 
     function updateBalanceDisplay() {
@@ -389,12 +392,14 @@
       document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
     }
 
-    function updateInvestments() {
+    function updateLiveTime() {
       const now = new Date();
-      const timeStr = now.toLocaleString();
+      const timeStr = now.toLocaleTimeString();
       document.getElementById("owealth-time").textContent = `Last Update: ${timeStr}`;
       document.getElementById("mtn-time").textContent = `Last Update: ${timeStr}`;
+    }
 
+    function updateInvestments() {
       let owealthAmount = parseFloat(localStorage.getItem("owealthAmount") || "162.09");
       let mtnAmount = parseFloat(localStorage.getItem("mtnAmount") || "188.40");
 
