@@ -13,18 +13,18 @@
     }
 
     body {
-      background-color: #f0fff6;
+      background-color: #f4f4f4;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       padding: 1rem;
     }
 
-    .success-container {
-      background-color: white;
-      max-width: 400px;
+    .container {
+      background-color: #fff;
       width: 100%;
+      max-width: 400px;
       padding: 2rem 1.5rem;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -33,20 +33,19 @@
 
     h2 {
       color: #00a859;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    .details {
-      text-align: left;
-      margin-top: 1.5rem;
-      line-height: 1.6;
+    p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
     }
 
-    .details span {
-      font-weight: bold;
+    strong {
+      color: #007e45;
     }
 
-    .back-btn {
+    button {
       margin-top: 2rem;
       background-color: #00a859;
       color: white;
@@ -56,31 +55,33 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background-color 0.3s;
-      width: 100%;
     }
 
-    .back-btn:hover {
+    button:hover {
       background-color: #007e45;
     }
   </style>
 </head>
 <body>
-  <div class="success-container">
-    <h2>✅ Transaction Successful</h2>
-    <p id="message"></p>
+  <div class="container">
+    <h2>Transaction Successful ✅</h2>
 
-    <div class="details">
-      <p><span>Transaction ID:</span> <span id="transaction-id"></span></p>
-      <p><span>Phone Number:</span> <span id="phone"></span></p>
-      <p><span>Operator:</span> <span id="operator"></span></p>
-      <p><span>Transaction Fee:</span> KES <span id="fee"></span></p>
-    </div>
+    <p>Transaction ID: <strong id="transaction-id"></strong></p>
+    <p>Phone Number: <strong id="phone-number"></strong></p>
+    <p>Operator: <strong id="operator"></strong></p>
+    <p>Amount Sent: <strong id="amount-sent"></strong></p>
+    <p>Transaction Fee: <strong id="transaction-fee"></strong></p>
+    <p>Transaction was successful. The beneficiary will receive the funds within 30 minutes.</p>
 
-    <button class="back-btn" onclick="redirectToDashboard()">Go to Dashboard</button>
+    <button onclick="goToDashboard()">← Back to Dashboard</button>
   </div>
 
   <script>
-    function generateTransactionID() {
+    const phone = sessionStorage.getItem("phone") || "Unknown";
+    const amount = parseFloat(sessionStorage.getItem("amount")) || 0;
+    const operator = sessionStorage.getItem("operator") || "N/A";
+
+    function generateTransactionId() {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let result = '';
       for (let i = 0; i < 8; i++) {
@@ -89,28 +90,24 @@
       return result;
     }
 
-    function getTransactionFee(amount) {
-      if (amount < 100) return 0;
-      if (amount < 1000) return 10;
-      if (amount < 10000) return 100;
-      return 200;
+    const transactionId = generateTransactionId();
+
+    let fee = 0;
+    if (amount >= 10000) {
+      fee = 100;
+    } else if (amount >= 1000) {
+      fee = 10;
+    } else if (amount >= 100) {
+      fee = 0;
     }
 
-    const phone = localStorage.getItem('phone') || 'Unknown';
-    const amount = parseFloat(localStorage.getItem('amount')) || 0;
-    const service = localStorage.getItem('service') || 'mpesa';
+    document.getElementById("transaction-id").textContent = transactionId;
+    document.getElementById("phone-number").textContent = phone;
+    document.getElementById("operator").textContent = operator;
+    document.getElementById("amount-sent").textContent = `KES ${amount.toFixed(2)}`;
+    document.getElementById("transaction-fee").textContent = `KES ${fee}`;
 
-    const operator = service.toLowerCase() === 'airtel' ? 'Airtel KE' : 'Safaricom';
-    const fee = getTransactionFee(amount);
-    const transactionId = generateTransactionID();
-
-    document.getElementById('transaction-id').textContent = transactionId;
-    document.getElementById('phone').textContent = phone;
-    document.getElementById('operator').textContent = operator;
-    document.getElementById('fee').textContent = fee;
-    document.getElementById('message').textContent = `Transaction of KES ${amount.toFixed(2)} was successful. Beneficiary will receive funds within 30 minutes.`;
-
-    function redirectToDashboard() {
+    function goToDashboard() {
       setTimeout(() => {
         window.location.href = "dashboard.html";
       }, 1000);
