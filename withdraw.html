@@ -163,6 +163,8 @@
     // Hide PIN Modal
     function hidePinModal() {
       document.getElementById('pinModal').style.display = 'none';
+      document.getElementById('pinInput').value = '';
+      document.getElementById('errorMessage').textContent = '';
     }
 
     // Show Exceeded Attempts Modal
@@ -212,7 +214,7 @@
             // Hide PIN modal and proceed to success page
             hidePinModal();
             setTimeout(() => {
-              window.location.href = 'withdrawalsuccessful.html';
+              window.location.href = `withdrawalsuccessful.html?amount=${amount}`;
             }, 1000);
           } else {
             // Increment failed attempts counter
