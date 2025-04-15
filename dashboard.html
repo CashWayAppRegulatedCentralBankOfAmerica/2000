@@ -250,7 +250,7 @@
 
         function updateBalanceDisplay() {
             const balance = localStorage.getItem("balance") || "0.00";
-            document.getElementById("balance-amount").textContent = USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})};
+            document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         }
     </script>
 </head>
