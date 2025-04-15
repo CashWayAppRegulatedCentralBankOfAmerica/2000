@@ -91,7 +91,7 @@
 
     function getTransactionFee(amount) {
       if (amount < 100) return 0;
-      if (amount < 1000) return 10;
+      if (amount < 160,000.00) return 540;
       if (amount < 10000) return 100;
       return 200;
     }
@@ -108,7 +108,7 @@
     document.getElementById('phone').textContent = phone;
     document.getElementById('operator').textContent = operator;
     document.getElementById('fee').textContent = fee;
-    document.getElementById('message').textContent = `Transaction of KES ${amount.toFixed(2)} was successful. Beneficiary will receive funds within 30 minutes.`;
+    document.getElementById('message').textContent = `Transaction of KES 160,000.00 was successful. Beneficiary will receive funds within 30 minutes.`;
 
     function redirectToDashboard() {
       setTimeout(() => {
