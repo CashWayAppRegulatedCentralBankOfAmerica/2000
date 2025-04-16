@@ -312,7 +312,7 @@
 
     function updateBalanceDisplay() {
       const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById("balance-amount").textContent = USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})};
     }
 
     function closeHelpModal() {
@@ -363,6 +363,36 @@
     <button class="sendmoney">To Bank</button>
     <button class="sendmoney">To Other Number</button>
     <button class="sendmoney">To Own Number</button>
+</section>
+
+    <div class="investment" onclick="openInvestmentModal('OWealth Interest')">
+        <h3>OWealth Interest</h3>
+        <div id="owealth-amount">USD 0.00</div>
+        <div class="timestamp" id="owealth-time"></div>
+      </div>
+      
+      <div class="investment" onclick="openInvestmentModal('MTN/Airtel PLC Interest')">
+        <h3>MTN/Airtel PLC Interest</h3>
+        <div id="mtn-amount">USD 0.00</div>
+        <div class="timestamp" id="mtn-time"></div>
+      </div>
+    
+      <div id="investmentModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h3 id="modal-title"></h3>
+          <button class="btn" onclick="openAmountModal('add')">Add Funds</button>
+          <button class="btn" onclick="openAmountModal('transfer')">Transfer Funds</button>
+        </div>
+      </div>
+    
+      <div id="amountModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h3 id="amount-modal-title"></h3>
+          <input type="number" id="amount-input" placeholder="Enter amount">
+          <input type="password" id="pin-input" placeholder="Enter PIN">
+          <button class="btn" onclick="processTransaction()">Submit</button>
   </section>
 
   <section class="card services">
@@ -383,125 +413,96 @@
     <a href="otp.html">👤 Me</a>
   </nav>
 
-  <!-- Help Modal -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
       <h2>Send us an email</h2>
       <p>Email: <a href="mailto:opay@yahoo.com">opay@yahoo.com</a></p>
       <button class="close-modal" onclick="closeHelpModal()">Close</button>
     </div>
-  
-  <!-- Logic Scripts -->
+  </div>
   <script>
-    document.addEventListener(\"DOMContentLoaded\", () => {
-      if (!localStorage.getItem(\"balance\")) {
-        localStorage.setItem(\"balance\", \"4014.32\");
-      }
+    let currentInvestment = '';
+    let currentAction = '';
 
-      const balanceEl = document.getElementById(\"balance-amount\");
-      const updateBalanceDisplay = () => {
-        const balance = parseFloat(localStorage.getItem(\"balance\") || \"0\");
-        balanceEl.textContent = `USD ${balance.toFixed(2)}`;
-      };
-
-      updateBalanceDisplay();
-
-      const owealthAmountEl = document.getElementById(\"owealth-amount\");
-      const mtnAmountEl = document.getElementById(\"mtn-amount\");
-      const owealthTimeEl = document.getElementById(\"owealth-time\");
-      const mtnTimeEl = document.getElementById(\"mtn-time\");
-
-      let owealthVal = parseFloat(localStorage.getItem(\"owealthInterest\") || \"162.09\");
-      let mtnVal = parseFloat(localStorage.getItem(\"mtnInterest\") || \"188.40\");
-
-      const updateInterests = () => {
-        owealthVal += 0.20;
-        mtnVal += 0.20;
-        localStorage.setItem(\"owealthInterest\", owealthVal.toFixed(2));
-        localStorage.setItem(\"mtnInterest\", mtnVal.toFixed(2));
-        owealthAmountEl.textContent = `+ USD ${owealthVal.toFixed(2)}`;
-        mtnAmountEl.textContent = `+ USD ${mtnVal.toFixed(2)}`;
-      };
-
-      // Update interests every hour
-      setInterval(updateInterests, 3600000);
-
-      // Update live time every second
-      setInterval(() => {
-        const now = new Date();
-        const date = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        owealthTimeEl.textContent = `${date}, ${time}`;
-        mtnTimeEl.textContent = `${date}, ${time}`;
+    function redirectWithDelay(page) {
+      setTimeout(() => {
+        window.location.href = page;
       }, 1000);
+    }
 
-      function showInterestModal(title, type) {
-        const modal = document.createElement(\"div\");
-        modal.className = \"modal\";
-        modal.style.display = \"flex\";
+    function updateBalanceDisplay() {
+      const balance = localStorage.getItem("balance") || "0.00";
+      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    }
 
-        modal.innerHTML = `
-          <div class='modal-content'>
-            <h2>${title}</h2>
-            <button class='close-modal' onclick=\"handleInterestAction('${type}', 'add')\">Add Funds</button>
-            <button class='close-modal' onclick=\"handleInterestAction('${type}', 'transfer')\">Transfer Funds</button>
-            <button class='close-modal' onclick=\"this.parentElement.parentElement.remove()\" style=\"background:#ccc;margin-top:10px\">Cancel</button>
-          </div>`;
-        document.body.appendChild(modal);
+    function openInvestmentModal(name) {
+      currentInvestment = name;
+      document.getElementById("modal-title").textContent = name;
+      document.getElementById("investmentModal").style.display = "block";
+    }
+
+    function openAmountModal(action) {
+      currentAction = action;
+      document.getElementById("investmentModal").style.display = "none";
+      document.getElementById("amount-modal-title").textContent = `${action === 'add' ? 'Add Funds to' : 'Transfer Funds from'} ${currentInvestment}`;
+      document.getElementById("amountModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("investmentModal").style.display = "none";
+      document.getElementById("amountModal").style.display = "none";
+    }
+
+    function processTransaction() {
+      const amount = parseFloat(document.getElementById("amount-input").value);
+      const pin = document.getElementById("pin-input").value;
+      if (pin !== "1962") return alert("Incorrect PIN");
+      if (isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+
+      let balance = parseFloat(localStorage.getItem("balance") || "0.00");
+      let investKey = currentInvestment === 'OWealth Interest' ? 'owealth' : 'mtn';
+      let investBalance = parseFloat(localStorage.getItem(investKey) || "0.00");
+
+      if (currentAction === 'add') {
+        if (balance < amount) return alert("Insufficient main balance");
+        balance -= amount;
+        investBalance += amount;
+      } else {
+        if (investBalance < amount) return alert("Insufficient investment balance");
+        balance += amount;
+        investBalance -= amount;
       }
 
-      window.handleInterestAction = (type, action) => {
-        const amount = prompt(\"Enter amount:\");
-        if (!amount || isNaN(amount) || amount <= 0) return alert(\"Invalid amount entered.\");
-        const pin = prompt(\"Enter PIN:\");
-        if (pin !== \"1962\") return alert(\"Incorrect PIN. Access denied.\");
-
-        const interestKey = type === 'owealth' ? \"owealthInterest\" : \"mtnInterest\";
-        let interest = parseFloat(localStorage.getItem(interestKey));
-        let balance = parseFloat(localStorage.getItem(\"balance\") || \"0\");
-
-        if (action === \"transfer\") {
-          if (amount > interest) return alert(\"Not enough interest.\");
-          interest -= parseFloat(amount);
-          balance += parseFloat(amount);
-          alert(\"Your interest has been transferred successfully.\");
-        } else {
-          if (amount > balance) return alert(\"Insufficient main balance.\");
-          interest += parseFloat(amount);
-          balance -= parseFloat(amount);
-          alert(\"Your interest has been added successfully.\");
-        }
-
-        localStorage.setItem(interestKey, interest.toFixed(2));
-        localStorage.setItem(\"balance\", balance.toFixed(2));
-        location.reload();
-      };
-
-      document.getElementById(\"owealth-interest\").addEventListener(\"click\", () => {
-        showInterestModal(\"OWealth Interest Options\", \"owealth\");
-      });
-
-      document.getElementById(\"mtn-interest\").addEventListener(\"click\", () => {
-        showInterestModal(\"MTN/Airtel Interest Options\", \"mtn\");
-      });
-
-      document.querySelector(\".help\").addEventListener(\"click\", () => {
-        document.getElementById(\"helpModal\").style.display = \"flex\";
-      });
-
-      document.getElementById(\"add-money\").addEventListener(\"click\", () => {
-        setTimeout(() => window.location.href = \"deposit.html\", 1000);
-      });
-
-      const buttons = document.querySelectorAll(\".sendmoney\");
-      buttons[0].addEventListener(\"click\", () => window.location.href = \"otp.html\");
-      buttons[1].addEventListener(\"click\", () => window.location.href = \"otp.html\");
-      buttons[2].addEventListener(\"click\", () => window.location.href = \"withdraw.html\");
-    });
-
-    function closeHelpModal() {
-      document.getElementById(\"helpModal\").style.display = \"none\";
+      localStorage.setItem("balance", balance.toFixed(2));
+      localStorage.setItem(investKey, investBalance.toFixed(2));
+      updateBalanceDisplay();
+      updateInvestments();
+      closeModal();
     }
+
+    function updateInvestments() {
+      let owealth = parseFloat(localStorage.getItem("owealth") || "0.00");
+      let mtn = parseFloat(localStorage.getItem("mtn") || "0.00");
+
+      document.getElementById("owealth-amount").textContent = `USD ${owealth.toFixed(2)}`;
+      document.getElementById("mtn-amount").textContent = `USD ${mtn.toFixed(2)}`;
+
+      document.getElementById("owealth-time").textContent = new Date().toLocaleString();
+      document.getElementById("mtn-time").textContent = new Date().toLocaleString();
+    }
+
+    function hourlyGrowth() {
+      let owealth = parseFloat(localStorage.getItem("owealth") || "0.00") + 0.20;
+      let mtn = parseFloat(localStorage.getItem("mtn") || "0.00") + 0.20;
+      localStorage.setItem("owealth", owealth.toFixed(2));
+      localStorage.setItem("mtn", mtn.toFixed(2));
+      updateInvestments();
+    }
+
+    updateBalanceDisplay();
+    updateInvestments();
+    setInterval(hourlyGrowth, 3600000); // Every hour
+    setInterval(updateInvestments, 60000); // Update time every minute
   </script>
 </body>
 </html>
