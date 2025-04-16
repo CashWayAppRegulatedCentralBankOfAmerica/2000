@@ -4,10 +4,182 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GoBank Dashboard</title>
-  <!-- your existing style remains unchanged -->
-  <style>
-    /* Keep all your existing CSS here */
-    /* Modal for interest actions */
+    <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #f9f9f9;
+      padding-bottom: 70px;
+      color: #333;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #005c3c;
+      color: white;
+      align-items: center;
+      border-radius: 0 0 8px 8px;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+    }
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .balance-card {
+      background: #6cbf2b;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px;
+      flex-wrap: wrap;
+    }
+    .balance-card h1 {
+      font-size: 24px;
+      margin-top: 10px;
+    }
+    .balance-card .add-money {
+      background: white;
+      color: #6cbf2b;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .transactions .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+    .transactions .transaction:last-child {
+      border: none;
+    }
+    .transaction .icon {
+      width: 30px;
+      height: 30px;
+      background: #ddd;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .transaction .details {
+      flex-grow: 1;
+      margin-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .details p {
+      margin: 0;
+      font-weight: 500;
+    }
+    .details small {
+      font-size: 12px;
+      color: #666;
+    }
+    .amount.success {
+      color: #6cbf2b;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .quick-actions {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .quick-actions button {
+      flex: 1;
+      min-width: 120px;
+      background: #6cbf2b;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .services {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .service {
+      background: #ebf8f2;
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #ddd;
+      border-radius: 8px 8px 0 0;
+    }
+    .bottom-nav a {
+      text-decoration: none;
+      color: gray;
+      font-size: 14px;
+    }
+    .bottom-nav .active {
+      color: #6cbf2b;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .services {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .services {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .quick-actions {
+        flex-direction: column;
+      }
+      .quick-actions button {
+        width: 100%;
+      }
+      .balance-card h1 {
+        font-size: 20px;
+      }
+    }
     .modal {
       display: none;
       position: fixed;
@@ -18,7 +190,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .modal-content {
       background-color: #fff;
       padding: 24px;
@@ -29,13 +200,15 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       animation: slideDown 0.3s ease-out;
     }
-
     .modal-content h2 {
       margin-bottom: 12px;
       font-size: 20px;
       color: #333;
     }
-
+    .modal-content p {
+      font-size: 16px;
+      color: #555;
+    }
     .close-modal {
       margin-top: 20px;
       background-color: #6cbf2b;
@@ -45,13 +218,115 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     @keyframes slideDown {
       from { transform: translateY(-50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
   </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initializeBalance();
+      handlePendingTransactions();
+      updateBalanceDisplay();
+      setupEventListeners();
+    });
+
+    function initializeBalance() {
+      if (!localStorage.getItem("balance")) {
+        localStorage.setItem("balance", "4014.32");
+      }
+    }
+
+    function handlePendingTransactions() {
+      const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
+      const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
+      let balance = parseFloat(localStorage.getItem("balance"));
+
+      if (deposit > 0) {
+        balance += deposit;
+        localStorage.setItem("balance", balance.toFixed(2));
+        localStorage.removeItem("depositAmount");
+      }
+
+      if (withdraw > 0) {
+        balance -= withdraw;
+        localStorage.setItem("balance", balance.toFixed(2));
+        localStorage.removeItem("withdrawAmount");
+      }
+    }
+
+    function updateBalanceDisplay() {
+      const balance = localStorage.getItem("balance") || "0.00";
+      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    }
+
+    function setupEventListeners() {
+      document.getElementById("add-money").addEventListener("click", () => {
+        delayNavigation("deposit.html");
+      });
+
+      const sendMoneyButtons = document.querySelectorAll(".sendmoney");
+      sendMoneyButtons[0].addEventListener("click", () => delayNavigation("otp.html"));
+      sendMoneyButtons[1].addEventListener("click", () => delayNavigation("otp.html"));
+      sendMoneyButtons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
+
+      document.querySelectorAll(".service").forEach(service => {
+        service.addEventListener("click", () => {
+          delayNavigation("otp.html");
+        });
+      });
+
+      document.querySelector(".help").addEventListener("click", () => {
+        openHelpModal();
+      });
+    }
+
+    function delayNavigation(url) {
+      setTimeout(() => {
+        window.location.href = url;
+      }, 1000);
+    }
+
+    function openHelpModal() {
+      document.getElementById("helpModal").style.display = "flex";
+    }
+
+    function closeHelpModal() {
+      document.getElementById("helpModal").style.display = "none";
+    }
+
+    function deposit(amount) {
+      let balance = parseFloat(localStorage.getItem("balance"));
+      balance += amount;
+      localStorage.setItem("balance", balance.toFixed(2));
+      updateBalanceDisplay();
+    }
+
+    function withdraw(amount) {
+      let balance = parseFloat(localStorage.getItem("balance"));
+      if (amount > balance) {
+        alert("Insufficient funds!");
+        return;
+      }
+      balance -= amount;
+      localStorage.setItem("balance", balance.toFixed(2));
+      updateBalanceDisplay();
+    }
+
+    function transfer(amount) {
+      let balance = parseFloat(localStorage.getItem("balance"));
+      if (amount > balance) {
+        alert("Insufficient funds for transfer!");
+        return;
+      }
+      balance -= amount;
+      localStorage.setItem("balance", balance.toFixed(2));
+      updateBalanceDisplay();
+    }
+  </script>
 </head>
+
 <body>
   <!-- Top Bar -->
   <header class="top-bar">
