@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GoBank Dashboard</title>
-    <style>
+  <title>My Wallet App</title>
+
+  <style>
     * {
       box-sizing: border-box;
       font-family: 'Segoe UI', sans-serif;
@@ -258,18 +259,24 @@
 
     function updateBalanceDisplay() {
       const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      const balanceElement = document.getElementById("balance-amount");
+      if (balanceElement) {
+        balanceElement.textContent = `USD ${parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      }
     }
 
     function setupEventListeners() {
-      document.getElementById("add-money").addEventListener("click", () => {
-        delayNavigation("deposit.html");
-      });
+      const addMoneyBtn = document.getElementById("add-money");
+      if (addMoneyBtn) {
+        addMoneyBtn.addEventListener("click", () => {
+          delayNavigation("deposit.html");
+        });
+      }
 
       const sendMoneyButtons = document.querySelectorAll(".sendmoney");
-      sendMoneyButtons[0].addEventListener("click", () => delayNavigation("otp.html"));
-      sendMoneyButtons[1].addEventListener("click", () => delayNavigation("otp.html"));
-      sendMoneyButtons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
+      sendMoneyButtons.forEach(button => {
+        button.addEventListener("click", () => delayNavigation("otp.html"));
+      });
 
       document.querySelectorAll(".service").forEach(service => {
         service.addEventListener("click", () => {
@@ -277,9 +284,10 @@
         });
       });
 
-      document.querySelector(".help").addEventListener("click", () => {
-        openHelpModal();
-      });
+      const helpButton = document.querySelector(".help");
+      if (helpButton) {
+        helpButton.addEventListener("click", openHelpModal);
+      }
     }
 
     function delayNavigation(url) {
@@ -289,11 +297,17 @@
     }
 
     function openHelpModal() {
-      document.getElementById("helpModal").style.display = "flex";
+      const modal = document.getElementById("helpModal");
+      if (modal) {
+        modal.style.display = "flex";
+      }
     }
 
     function closeHelpModal() {
-      document.getElementById("helpModal").style.display = "none";
+      const modal = document.getElementById("helpModal");
+      if (modal) {
+        modal.style.display = "none";
+      }
     }
 
     function deposit(amount) {
@@ -326,6 +340,7 @@
     }
   </script>
 </head>
+<body>
 
 <body>
   <!-- Top Bar -->
