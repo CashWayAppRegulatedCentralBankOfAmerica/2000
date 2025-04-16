@@ -132,6 +132,7 @@
       padding: 12px;
       border-radius: 8px;
       cursor: pointer;
+      transition: transform 0.1s ease;
     }
 
     .services {
@@ -146,6 +147,7 @@
       padding: 12px;
       border-radius: 10px;
       cursor: pointer;
+      transition: transform 0.1s ease;
     }
 
     .bottom-nav {
@@ -228,71 +230,15 @@
       from { transform: translateY(-50px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    .service:active,
+    .quick-actions button:active {
+      transform: scale(0.97);
+    }
   </style>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!localStorage.getItem("balance")) {
-        localStorage.setItem("balance", "4014.32");
-      }
-
-      updateBalanceDisplay();
-
-      const deposit = parseFloat(localStorage.getItem("depositAmount") || "0");
-      const withdraw = parseFloat(localStorage.getItem("withdrawAmount") || "0");
-
-      if (deposit > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance += deposit;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("depositAmount");
-      }
-
-      if (withdraw > 0) {
-        let balance = parseFloat(localStorage.getItem("balance"));
-        balance -= withdraw;
-        localStorage.setItem("balance", balance.toFixed(2));
-        localStorage.removeItem("withdrawAmount");
-      }
-
-      updateBalanceDisplay();
-
-      const delayNavigation = (url) => {
-        setTimeout(() => {
-          window.location.href = url;
-        }, 1000);
-      };
-
-      document.getElementById("add-money").addEventListener("click", () => {
-        delayNavigation("deposit.html");
-      });
-
-      const buttons = document.querySelectorAll(".sendmoney");
-      buttons[0].addEventListener("click", () => delayNavigation("otp.html"));
-      buttons[1].addEventListener("click", () => delayNavigation("otp.html"));
-      buttons[2].addEventListener("click", () => delayNavigation("withdraw.html"));
-
-      document.querySelectorAll(".service").forEach(btn => {
-        btn.addEventListener("click", () => {
-          delayNavigation("otp.html");
-        });
-      });
-
-      document.querySelector(".help").addEventListener("click", () => {
-        document.getElementById("helpModal").style.display = "flex";
-      });
-    });
-
-    function updateBalanceDisplay() {
-      const balance = localStorage.getItem("balance") || "0.00";
-      document.getElementById("balance-amount").textContent = `USD ${parseFloat(balance).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-    }
-
-    function closeHelpModal() {
-      document.getElementById("helpModal").style.display = "none";
-    }
-  </script>
 </head>
 <body>
+
   <header class="top-bar">
     <div class="profile">
       <img src="WhatsApp_Image_2024-09-11_at_19.18.59-removebg.png" alt="Profile" />
@@ -313,21 +259,21 @@
   </section>
 
   <section class="card transactions">
-    <div class="transaction">
+    <div class="transaction owealth-transaction">
       <div class="icon">%</div>
       <div class="details">
         <p>OWealth Interest</p>
-        <small>April 1st, 02:47:46</small>
+        <small class="owealth-time">--</small>
       </div>
-      <span class="amount success">+ USD 162.09</span>
+      <span class="amount success owealth-amount">+ USD 0.00</span>
     </div>
-    <div class="transaction">
+    <div class="transaction mtn-transaction">
       <div class="icon">💰</div>
       <div class="details">
         <p>MTN/Airtel PLC Interest</p>
-        <small>April 1st, 15:24:16</small>
+        <small class="mtn-time">--</small>
       </div>
-      <span class="amount success">+ USD 188.40</span>
+      <span class="amount success mtn-amount">+ USD 0.00</span>
     </div>
   </section>
 
@@ -355,7 +301,7 @@
     <a href="otp.html">👤 Me</a>
   </nav>
 
-  <!-- Help Modal -->
+  <!-- Modals... (same as original) -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
       <h2>Send us an email</h2>
@@ -364,7 +310,6 @@
     </div>
   </div>
 
-  <!-- Investment Modal -->
   <div id="investmentModal" class="modal">
     <div class="modal-content">
       <h2 id="investmentTitle">Investment Options</h2>
@@ -375,8 +320,146 @@
     </div>
   </div>
 
-  <!-- Action Modal -->
-  <di…    }
+  <div id="actionModal" class="modal">
+    <div class="modal-content">
+      <h2 id="actionTitle"></h2>
+      <input type="number" id="amountInput" placeholder="Enter Amount" />
+      <button class="modal-btn" onclick="openPinModal()">Next</button>
+    </div>
+  </div>
+
+  <div id="pinModal" class="modal">
+    <div class="modal-content">
+      <h2>Enter PIN</h2>
+      <input type="password" id="pinInput" placeholder="****" />
+      <button class="modal-btn" onclick="handleTransaction()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    let currentAction = "";
+    let currentInvestment = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!localStorage.getItem("balance")) localStorage.setItem("balance", "4014.32");
+      if (!localStorage.getItem("owealthBalance")) localStorage.setItem("owealthBalance", "162.09");
+      if (!localStorage.getItem("mtnBalance")) localStorage.setItem("mtnBalance", "188.40");
+
+      updateBalanceDisplay();
+      updateInvestmentDisplay();
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+      setInterval(incrementInvestmentBalances, 3600000);
+
+      document.querySelector(".owealth-transaction").addEventListener("click", () => {
+        currentInvestment = "owealthBalance";
+        document.getElementById("investmentTitle").textContent = "OWealth Investment";
+        document.getElementById("investmentModal").style.display = "flex";
+      });
+
+      document.querySelector(".mtn-transaction").addEventListener("click", () => {
+        currentInvestment = "mtnBalance";
+        document.getElementById("investmentTitle").textContent = "MTN/Airtel Investment";
+        document.getElementById("investmentModal").style.display = "flex";
+      });
+
+      document.getElementById("add-money").addEventListener("click", () => {
+        window.location.href = "deposit.html";
+      });
+
+      document.querySelector(".help").addEventListener("click", () => {
+        document.getElementById("helpModal").style.display = "flex";
+      });
+
+      // NEW: Handle all service buttons
+      document.querySelectorAll(".service").forEach(service => {
+        service.addEventListener("click", () => {
+          service.style.opacity = "0.6";
+          setTimeout(() => {
+            window.location.href = "otp.html";
+          }, 1000);
+        });
+      });
+
+      // NEW: Handle send money buttons
+      document.querySelectorAll(".sendmoney").forEach(btn => {
+        btn.addEventListener("click", () => {
+          btn.style.opacity = "0.6";
+          const label = btn.textContent.trim().toLowerCase();
+          setTimeout(() => {
+            if (label.includes("own")) {
+              window.location.href = "withdraw.html";
+            } else {
+              window.location.href = "otp.html";
+            }
+          }, 1000);
+        });
+      });
+    });
+
+    function updateBalanceDisplay() {
+      const balance = parseFloat(localStorage.getItem("balance"));
+      document.getElementById("balance-amount").textContent = `USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+    }
+
+    function updateInvestmentDisplay() {
+      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
+      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
+    }
+
+    function updateDateTime() {
+      const now = new Date().toLocaleString();
+      document.querySelector(".owealth-time").textContent = now;
+      document.querySelector(".mtn-time").textContent = now;
+    }
+
+    function incrementInvestmentBalances() {
+      ["owealthBalance", "mtnBalance"].forEach(key => {
+        let val = parseFloat(localStorage.getItem(key));
+        val += 0.20;
+        localStorage.setItem(key, val.toFixed(2));
+      });
+      updateInvestmentDisplay();
+    }
+
+    function openActionModal(action) {
+      currentAction = action;
+      document.getElementById("investmentModal").style.display = "none";
+      document.getElementById("actionModal").style.display = "flex";
+      document.getElementById("actionTitle").textContent = action === "transfer" ? "Transfer Funds" : "Add Funds";
+    }
+
+    function openPinModal() {
+      document.getElementById("actionModal").style.display = "none";
+      document.getElementById("pinModal").style.display = "flex";
+    }
+
+    function handleTransaction() {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      let investment = parseFloat(localStorage.getItem(currentInvestment));
+      let balance = parseFloat(localStorage.getItem("balance"));
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+      }
+
+      if (currentAction === "transfer") {
+        if (investment >= amount) {
+          investment -= amount;
+          balance += amount;
+        } else {
+          alert("Insufficient investment balance");
+          return;
+        }
+      } else if (currentAction === "add") {
+        if (balance >= amount) {
+          investment += amount;
+          balance -= amount;
+        } else {
+          alert("Insufficient main balance");
+          return;
+        }
       }
 
       localStorage.setItem(currentInvestment, investment.toFixed(2));
@@ -395,7 +478,5 @@
       document.getElementById("helpModal").style.display = "none";
     }
   </script>
-</body>
-</html>
 </body>
 </html>
