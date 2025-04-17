@@ -170,10 +170,12 @@
       event.preventDefault();
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      if (username && password) {
-        window.location.href = "dashboard.html";
+
+      // Check if the entered credentials match the predefined ones
+      if (username === "JacobAmaitsa" && password === "JacobAmaitsa001") {
+        window.location.href = "dashboard.html"; // Redirect to the dashboard if valid
       } else {
-        document.getElementById("error").innerText = "Please fill in both fields.";
+        document.getElementById("error").innerText = "Invalid username or password."; // Error message for incorrect credentials
       }
     }
 
