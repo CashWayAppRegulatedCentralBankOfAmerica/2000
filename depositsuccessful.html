@@ -64,7 +64,7 @@
   <script>
     // Show deposited amount
     const amount = localStorage.getItem('depositAmount') || 0;
-    document.getElementById('amount').textContent = `KES ${parseFloat(amount).toFixed(2)}`;
+    document.getElementById('amount').textContent = `USD ${parseFloat(amount).toFixed(2)}`;
 
     function goToDashboard() {
       setTimeout(() => {
