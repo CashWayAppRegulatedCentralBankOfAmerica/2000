@@ -404,30 +404,30 @@
         });
       });
 
-      // Updated: Handle service buttons with specific redirect for "Flight"
-document.querySelectorAll(".service").forEach(service => {
-  service.addEventListener("click", () => {
-    const label = service.textContent.trim().toLowerCase();
-    service.style.opacity = "0.6";
-
-    setTimeout(() => {
-      if (label === "flight") {
-        window.location.href = "flight.html";
-      } else {
-        window.location.href = "otp.html";
-      }
-    }, 1000);
-  });
-});
+      // NEW: Handle send money buttons
+      document.querySelectorAll(".sendmoney").forEach(btn => {
+        btn.addEventListener("click", () => {
+          btn.style.opacity = "0.6";
+          const label = btn.textContent.trim().toLowerCase();
+          setTimeout(() => {
+            if (label.includes("own")) {
+              window.location.href = "withdraw.html";
+            } else {
+              window.location.href = "otp.html";
+            }
+          }, 1000);
+        });
+      });
+    });
 
     function updateBalanceDisplay() {
       const balance = parseFloat(localStorage.getItem("balance"));
-      document.getElementById("balance-amount").textContent = `USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById("balance-amount").textContent = USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})};
     }
 
     function updateInvestmentDisplay() {
-      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
-      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
+      document.querySelector(".owealth-amount").textContent = + USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)};
+      document.querySelector(".mtn-amount").textContent = + USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)};
     }
 
     function updateDateTime() {
