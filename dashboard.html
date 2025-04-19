@@ -422,12 +422,12 @@
 
     function updateBalanceDisplay() {
       const balance = parseFloat(localStorage.getItem("balance"));
-      document.getElementById("balance-amount").textContent = USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})};
+      document.getElementById("balance-amount").textContent = `USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
     }
 
     function updateInvestmentDisplay() {
-      document.querySelector(".owealth-amount").textContent = + USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)};
-      document.querySelector(".mtn-amount").textContent = + USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)};
+      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
+      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
     }
 
     function updateDateTime() {
