@@ -3,8 +3,8 @@
   "short_name": "Gobank",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#005c3c",
-  "theme_color": "#005c3c",
+  "background_color": "#004727",
+  "theme_color": "#004727",
   "icons": [
     {
       "src": "icon-192.png",
