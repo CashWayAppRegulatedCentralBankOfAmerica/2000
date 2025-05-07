@@ -1,6 +1,6 @@
 {
   "name": "GoBank",
-  "short_name": "Gobank",
+  "short_name": "GoBank",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#004727",
