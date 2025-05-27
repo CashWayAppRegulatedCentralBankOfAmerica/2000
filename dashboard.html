@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#005c3c">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#005c3c">
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GoBank Dashboard</title>
-    <link rel="icon" href="path/to/icon.png" sizes="192x192" />
-<link rel="apple-touch-icon" href="path/to/icon.png" sizes="192x192" />
-<link rel="manifest" href="manifest.json" />
   <style>
     * {
       box-sizing: border-box;
@@ -281,7 +276,7 @@
   <section class="card balance-card">
     <div>
       <span>Available Balance</span>
-      <h1 id="balance-amount">KES 0.00</h1>
+      <h1 id="balance-amount">USD 0.00</h1>
     </div>
     <button id="add-money" class="add-money">+ Add Money</button>
   </section>
@@ -293,7 +288,7 @@
         <p>OWealth Interest</p>
         <small class="owealth-time">--</small>
       </div>
-      <span class="amount success owealth-amount">+ KES 0.00</span>
+      <span class="amount success owealth-amount">+ USD 0.00</span>
     </div>
     <div class="transaction mtn-transaction">
       <div class="icon">💰</div>
@@ -301,7 +296,7 @@
         <p>MTN/Airtel PLC Interest</p>
         <small class="mtn-time">--</small>
       </div>
-      <span class="amount success mtn-amount">+ KES 0.00</span>
+      <span class="amount success mtn-amount">+ USD 0.00</span>
     </div>
   </section>
 
@@ -427,12 +422,12 @@
 
     function updateBalanceDisplay() {
       const balance = parseFloat(localStorage.getItem("balance"));
-      document.getElementById("balance-amount").textContent = `KES ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+      document.getElementById("balance-amount").textContent = `USD ${balance.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
     }
 
     function updateInvestmentDisplay() {
-      document.querySelector(".owealth-amount").textContent = `+ KES ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
-      document.querySelector(".mtn-amount").textContent = `+ KES ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
+      document.querySelector(".owealth-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("owealthBalance")).toFixed(2)}`;
+      document.querySelector(".mtn-amount").textContent = `+ USD ${parseFloat(localStorage.getItem("mtnBalance")).toFixed(2)}`;
     }
 
     function updateDateTime() {
