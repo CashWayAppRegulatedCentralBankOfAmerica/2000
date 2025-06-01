@@ -1,8 +1,11 @@
 {
   "name": "GoBank",
   "short_name": "GoBank",
-  "start_url": "index.html",
+  "description": "Securely manage your finances with GoBank.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#004727",
   "theme_color": "#004727",
   "icons": [
